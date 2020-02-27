@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:xapp/transitions/enter_exit_route.dart';
 
 import '../utils/fade_in.dart';
-import '../home/mainpage.dart';
+import '../home/preferences.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -258,7 +258,7 @@ class _LoginState extends State<Login> {
             top: 30.0,
             right: 10.0,
             child: InkWell(
-              onTap: () => Navigator.pushReplacement(context, EnterExitRoute(exitPage: Login(), enterPage: MainPage())),
+              onTap: () => Navigator.pushReplacement(context, EnterExitRoute(exitPage: Login(), enterPage: Preferences())),
               child: Container(
                 width: 70.0,
                 height: 30.0,

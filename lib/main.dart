@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:provider/provider.dart';
+import 'package:xapp/utils/prefs.dart';
 
 import 'login/login.dart';
 import 'transitions/fade_route.dart';
@@ -9,15 +11,18 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Xapp',
-      theme: ThemeData(
-        primaryColor: Colors.black,
-        accentColor: Colors.black,
-        fontFamily: 'Open Sans'
+    return ChangeNotifierProvider<Prefs>(
+      create: (_) => Prefs(),
+      child: MaterialApp(
+        title: 'Xapp',
+        theme: ThemeData(
+          primaryColor: Color(0xff73aef5),
+          accentColor: Color(0xff73aef5),
+          fontFamily: 'Open Sans'
+        ),
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen(),
       ),
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
     );
   }
 }
