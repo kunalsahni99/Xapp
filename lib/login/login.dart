@@ -166,7 +166,7 @@ class _LoginState extends State<Login> {
                               padding: EdgeInsets.all(15.0),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                               color: Colors.white,
-                              child: Text('Continue',
+                              child: Text('Generate OTP',
                                 style: TextStyle(
                                   color: Color(0xFF527DAA),
                                   letterSpacing: 1.5,

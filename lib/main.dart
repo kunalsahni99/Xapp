@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
-import 'package:xapp/utils/prefs.dart';
+import 'package:flutter/services.dart';
 
-import 'login/login.dart';
+import 'package:xapp/utils/prefs.dart';
+import 'home/mainpage.dart';
 import 'transitions/fade_route.dart';
 
-void main() => runApp(MyApp());
+void main(){
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Color(0xff73aef5),
+    statusBarColor: Color(0xff73aef5),
+  ));
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -39,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(
       Duration(seconds: 2),
-      () => Navigator.pushReplacement(context, FadeRouteBuilder(page: Login()))
+      () => Navigator.pushReplacement(context, FadeRouteBuilder(page: MainPage()))
     );
   }
 
