@@ -40,6 +40,7 @@ dev_dependencies:
   font_awesome_flutter: ^8.7.0
   line_icons: ^0.2.0
   fade: ^1.0.0
+  dotted_border: ^1.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

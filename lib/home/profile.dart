@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 
+import 'edit_profile.dart';
+import '../transitions/slide_top_route.dart';
 import '../utils/prefs.dart';
 
 class Profile extends StatefulWidget {
@@ -22,7 +24,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     'Politics',
     'Politics',
     'Politics',
-    'Politics', 'Politics', 'Politics', 'Politics(Indian)'];
+    'Politics', 'Politics', 'Politics', 'Politics(Indian)']; //todo: initialize this list with user's preference list
 
   @override
   void initState() {
@@ -81,7 +83,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             padding: EdgeInsets.only(top: 20.0),
             child: GridView.builder(
               physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.only(bottom: 10.0),
+              padding: EdgeInsets.only(left: 5.0, right: 5.0),
               shrinkWrap: true,
               itemCount: userPrefs.length,
               itemBuilder: (context, index) => prefsBubbles(userPrefs[index]),
@@ -209,24 +211,25 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 ),
 
                                 Padding(
-                                  padding: EdgeInsets.only(left: 40.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text('Profile',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 25.0,
-                                            fontWeight: FontWeight.bold
+                                  padding: EdgeInsets.only(left: 30.0),
+                                  child: InkWell(
+                                    onTap: () => Navigator.push(context, SlideTopRoute(page: EditProfile())),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text('Profile',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25.0,
+                                              fontWeight: FontWeight.bold
+                                          ),
                                         ),
-                                      ),
 
-                                      IconButton(
-                                        icon: Icon(Icons.edit, color: Colors.white, size: 25.0,),
-                                        onPressed: (){
-                                          //todo: edit profile function
-                                        },
-                                      )
-                                    ],
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 10.0),
+                                          child: Icon(Icons.edit, color: Colors.white, size: 25.0),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
 

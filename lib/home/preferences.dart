@@ -16,27 +16,7 @@ class Preferences extends StatefulWidget {
 }
 
 class _PreferencesState extends State<Preferences> {
-  List<String> items = [
-    'Movies',
-    'Music',
-    'Games',
-    'Sports',
-    'Comedy & Memes',
-    'Environment',
-    'Food',
-    'Religion',
-    'Fitness',
-    'Science & Technology',
-    'Fashion',
-    'Career',
-    'General Knowledge',
-    'Meditation & Yoga',
-    'Hobbies',
-    'Art',
-    'Politics (World)',
-    'Politics (Indian)',
-    'Business ideas'
-  ], selected = [];
+  List<String> selected = [];
   bool loading = false;
 
   @override
@@ -102,10 +82,10 @@ class _PreferencesState extends State<Preferences> {
                           begin: Offset(0, -0.1),
                           end: Offset.zero
                         ).animate(animation),
-                        child: SingleCategory(title: items[index]),
+                        child: SingleCategory(title: Utils().items[index]),
                       ),
                     ),
-                    itemCount: items.length,
+                    itemCount: Utils().items.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 16,

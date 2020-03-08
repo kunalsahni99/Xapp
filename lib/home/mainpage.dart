@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fade/fade.dart';
 
+import '../transitions/slide_top_route.dart';
+import 'add_post.dart';
 import '../utils/app_bar.dart';
 
 bool disAg = false, Ag = false;
@@ -58,7 +60,7 @@ class _MainPageState extends State<MainPage> {
       floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: 50.0),
         child: FloatingActionButton(
-          onPressed: (){},
+          onPressed: () => Navigator.push(context, SlideTopRoute(page: AddPost())),
           backgroundColor: Color(0xff73aef5),
           child: Icon(FontAwesomeIcons.plus, color: Colors.white),
         ),
