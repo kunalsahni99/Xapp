@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: Color(0xff73aef5),
           accentColor: Color(0xff73aef5),
-          fontFamily: 'Open Sans'
+          fontFamily: 'Open Sans',
         ),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
@@ -52,12 +52,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text('Xapp',
-          style: TextStyle(
-            fontSize: 30.0,
-            color: Colors.black
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.white
+      ),
+      child: Scaffold(
+        body: Center(
+          child: Text('Xapp',
+            style: TextStyle(
+              fontSize: 30.0,
+              color: Colors.black
+            ),
           ),
         ),
       ),

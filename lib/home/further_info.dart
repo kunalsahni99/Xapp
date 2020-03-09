@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 import '../utils/prefs.dart';
+import '../utils/fade_in.dart';
 
 class FurtherInfo extends StatefulWidget {
+  final File image;
+
+  FurtherInfo({this.image});
+
   @override
   _FurtherInfoState createState() => _FurtherInfoState();
 }
@@ -12,6 +18,8 @@ class _FurtherInfoState extends State<FurtherInfo> {
   final GlobalKey<FormState> fKey = GlobalKey<FormState>();
   final FocusNode focusNode1 = FocusNode();
   final FocusNode focusNode2 = FocusNode();
+  String dropVal = Utils().items[0];
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,28 +53,67 @@ class _FurtherInfoState extends State<FurtherInfo> {
         key: fKey,
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Title',
+              FadeIn(
+                delay: 1.33,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 10.0, top: 20.0, left: 30.0),
+                  child: Text('Category',
+                    style: TextStyle(
+                        fontSize: 20.0
+                    ),
                   ),
-                  maxLines: 3,
-                  focusNode: focusNode1,
-                  maxLength: 20,
                 ),
               ),
 
-              Padding(
-                padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Description',
+              FadeIn(
+                delay: 1.66,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 30.0),
+                  child: DropdownButton(
+                    value: dropVal,
+                    icon: Icon(Icons.arrow_drop_down, size: 30.0, color: Colors.grey),
+                    onChanged: (newVal){
+                      setState(() => dropVal = newVal);
+                    },
+                    items: Utils().items.map<DropdownMenuItem<String>>((val){
+                      return DropdownMenuItem<String>(
+                        value: val,
+                        child: Text(val),
+                      );
+                    }).toList(),
                   ),
-                  maxLines: 10,
-                  maxLength: 1000,
-                  focusNode: focusNode2,
+                ),
+              ),
+
+              FadeIn(
+                delay: 1.99,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Title',
+                    ),
+                    maxLines: 3,
+                    focusNode: focusNode1,
+                    maxLength: 20,
+                  ),
+                ),
+              ),
+
+              FadeIn(
+                delay: 2.2,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                    ),
+                    maxLines: 10,
+                    maxLength: 1000,
+                    focusNode: focusNode2,
+                  ),
                 ),
               ),
             ],

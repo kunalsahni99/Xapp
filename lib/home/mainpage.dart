@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fade/fade.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../transitions/slide_top_route.dart';
 import 'add_post.dart';
@@ -18,6 +20,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   PageController controller;
+  DateTime currentBackPressTime;
 
   @override
   void initState() {
@@ -25,44 +28,68 @@ class _MainPageState extends State<MainPage> {
     controller = PageController();
   }
 
+  Future<bool> _onWillPopScope() {
+    if (controller.offset > 0.0) {
+      controller.animateTo(0,
+          duration: Duration(seconds: 1), curve: Curves.easeIn);
+    } else {
+      DateTime now = DateTime.now();
+      if (currentBackPressTime == null ||
+          now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+        currentBackPressTime = now;
+        Fluttertoast.showToast(msg: 'Press again to exit');
+        return Future.value(false);
+      }
+      return Future.value(true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: TopBar(title: 'Whyyu'),
-      body: PageView.builder(
-        itemCount: 10,
-        controller: controller,
-        scrollDirection: Axis.vertical,
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (context, index) => GestureDetector(
-          onPanUpdate: (details){
-            if (details.delta.dx > 0){
-              //todo: right swipe
-              setState(() => Ag = true);
-              Timer(
-                Duration(milliseconds: 500),
-                () => setState(() => Ag = false)
-              );
-            }
-            else if (details.delta.dx < 0){
-              //todo: left swipe
-              setState(() => disAg = true);
-              Timer(
-                  Duration(milliseconds: 500),
-                  () => setState(() => disAg = false)
-              );
-            }
-          },
-          child: SinglePost()
-        ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Color(0xff73aef5)
       ),
-      
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: 50.0),
-        child: FloatingActionButton(
-          onPressed: () => Navigator.push(context, SlideTopRoute(page: AddPost())),
-          backgroundColor: Color(0xff73aef5),
-          child: Icon(FontAwesomeIcons.plus, color: Colors.white),
+      child: WillPopScope(
+        onWillPop: _onWillPopScope,
+        child: Scaffold(
+          appBar: TopBar(title: 'Whyyu'),
+          body: PageView.builder(
+            itemCount: 10,
+            controller: controller,
+            scrollDirection: Axis.vertical,
+            physics: BouncingScrollPhysics(),
+            itemBuilder: (context, index) => GestureDetector(
+              onPanUpdate: (details){
+                if (details.delta.dx > 0){
+                  //todo: right swipe
+                  setState(() => Ag = true);
+                  Timer(
+                    Duration(milliseconds: 500),
+                    () => setState(() => Ag = false)
+                  );
+                }
+                else if (details.delta.dx < 0){
+                  //todo: left swipe
+                  setState(() => disAg = true);
+                  Timer(
+                      Duration(milliseconds: 500),
+                      () => setState(() => disAg = false)
+                  );
+                }
+              },
+              child: SinglePost()
+            ),
+          ),
+
+          floatingActionButton: Padding(
+            padding: EdgeInsets.only(bottom: 50.0),
+            child: FloatingActionButton(
+              onPressed: () => Navigator.push(context, SlideTopRoute(page: AddPost())),
+              backgroundColor: Color(0xff73aef5),
+              child: Icon(FontAwesomeIcons.plus, color: Colors.white),
+            ),
+          ),
         ),
       ),
     );
