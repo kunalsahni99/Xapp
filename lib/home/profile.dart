@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 
 import 'edit_profile.dart';
+import 'preferences.dart';
 import '../transitions/slide_top_route.dart';
 import '../utils/prefs.dart';
 
@@ -19,12 +20,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     'Music',
     'Games',
     'Science & Technology',
-    'Food', 'Memes',
-    'Politics',
-    'Politics',
-    'Politics',
-    'Politics',
-    'Politics', 'Politics', 'Politics', 'Politics(Indian)']; //todo: initialize this list with user's preference list
+    'Food', 'Comedy & Memes', 'Politics (Indian)']; //todo: initialize this list with user's preference list
 
   @override
   void initState() {
@@ -72,7 +68,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 IconButton(
                   icon: Icon(Icons.edit, color: Color(0xff73aef5), size: 25.0),
                   onPressed: () {
-                    //todo: edit preference list
+                    Navigator.push(context, SlideTopRoute(page: Preferences(userPrefs: userPrefs)));
                   },
                 )
               ],

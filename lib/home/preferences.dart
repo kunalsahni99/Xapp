@@ -4,6 +4,7 @@ import 'package:auto_animated/auto_animated.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:async';
+import 'package:collection/collection.dart';
 
 import 'package:provider/provider.dart';
 import '../utils/prefs.dart';
@@ -11,6 +12,10 @@ import '../transitions/enter_exit_route.dart';
 import 'mainpage.dart';
 
 class Preferences extends StatefulWidget {
+  final List<String> userPrefs;
+
+  Preferences({this.userPrefs});
+
   @override
   _PreferencesState createState() => _PreferencesState();
 }
@@ -18,6 +23,14 @@ class Preferences extends StatefulWidget {
 class _PreferencesState extends State<Preferences> {
   List<String> selected = [];
   bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.userPrefs != null){
+      setState(() => Provider.of<Prefs>(context, listen: false).selected = widget.userPrefs);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +67,7 @@ class _PreferencesState extends State<Preferences> {
                   Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.only(top: 50.0),
-                    child: Text('What are your interests?',
+                    child: Text(widget.userPrefs == null ? 'What are your interests?' : 'Edit your preferences...',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 25.0,
@@ -72,19 +85,25 @@ class _PreferencesState extends State<Preferences> {
                       showItemDuration: Duration(milliseconds: 250),
                       visibleFraction: 0.05,
                     ),
-                    itemBuilder: (context, index, animation) => FadeTransition(
-                      opacity: Tween<double>(
-                        begin: 0,
-                        end: 1
-                      ).animate(animation),
-                      child: SlideTransition(
-                        position: Tween<Offset>(
-                          begin: Offset(0, -0.1),
-                          end: Offset.zero
+                    itemBuilder: (context, index, animation){
+                      bool checked = false;
+                      if (widget.userPrefs != null && widget.userPrefs.contains(Utils().items[index])){
+                        checked = true;
+                      }
+                      return FadeTransition(
+                        opacity: Tween<double>(
+                            begin: 0,
+                            end: 1
                         ).animate(animation),
-                        child: SingleCategory(title: Utils().items[index]),
-                      ),
-                    ),
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                              begin: Offset(0, -0.1),
+                              end: Offset.zero
+                          ).animate(animation),
+                          child: SingleCategory(title: Utils().items[index], isChecked: checked),
+                        ),
+                      );
+                    },
                     itemCount: Utils().items.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -98,9 +117,10 @@ class _PreferencesState extends State<Preferences> {
           ),
 
           floatingActionButton: Visibility(
-            visible: itemState.length == 0 ? false : true,
+            visible: itemState.selected.length == 0 ? false : true,
             child: InkWell(
               onTap: (){
+                Function eq = const ListEquality().equals;
                 setState(() => selected = itemState.selected);
                 if (selected.length < 4){
                   Fluttertoast.showToast(msg: 'Select atleast 4 categories');
@@ -111,10 +131,17 @@ class _PreferencesState extends State<Preferences> {
                     Duration(seconds: 2),
                     (){
                       setState(() => loading = false);
-                      Navigator.pushReplacement(context, EnterExitRoute(
-                        enterPage: MainPage(),
-                        exitPage: Preferences()
-                      ));
+                      if (widget.userPrefs != null && eq(widget.userPrefs, selected)){
+                        Navigator.pop(context);
+                        //todo: update user prefs in database
+
+                      }
+                      else{
+                        Navigator.pushReplacement(context, EnterExitRoute(
+                            enterPage: MainPage(),
+                            exitPage: Preferences()
+                        ));
+                      }
                     }
                   );
                 }
@@ -133,7 +160,7 @@ class _PreferencesState extends State<Preferences> {
                     )
                   ]
                 ),
-                child: itemState.length == 0 ?
+                child: itemState.selected.length == 0 ?
                     Icon(Icons.arrow_forward, color: Colors.white, size: 25.0) :
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +168,7 @@ class _PreferencesState extends State<Preferences> {
                         Icon(Icons.check, color: Colors.white, size: 35.0),
                         Padding(
                           padding: EdgeInsets.only(top: 25.0),
-                          child: Text(itemState.length.toString(),
+                          child: Text(itemState.selected.length.toString(),
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -216,15 +243,22 @@ class _PreferencesState extends State<Preferences> {
 
 class SingleCategory extends StatefulWidget {
   final String title;
+  final bool isChecked;
 
-  SingleCategory({this.title});
+  SingleCategory({this.title, this.isChecked});
 
   @override
   _SingleCategoryState createState() => _SingleCategoryState();
 }
 
 class _SingleCategoryState extends State<SingleCategory> {
-  bool isChecked = false;
+  bool isChecked;
+
+  @override
+  void initState() {
+    super.initState();
+    isChecked = widget.isChecked;
+  }
 
   @override
   Widget build(BuildContext context) {
