@@ -20,8 +20,6 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget{
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      left: false,
-      right: false,
       minimum: EdgeInsets.only(top: 10.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -46,6 +44,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget{
               ),
             ),
           ),
+
 
           Card(
             shape: RoundedRectangleBorder(

@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fade/fade.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'comments.dart';
 import '../transitions/slide_top_route.dart';
 import 'add_post.dart';
 import '../utils/app_bar.dart';
@@ -52,45 +53,49 @@ class _MainPageState extends State<MainPage> {
       ),
       child: WillPopScope(
         onWillPop: _onWillPopScope,
-        child: Scaffold(
-          appBar: TopBar(title: 'Whyyu'),
-          body: PageView.builder(
-            itemCount: 10,
-            controller: controller,
-            scrollDirection: Axis.vertical,
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index) => GestureDetector(
-              onPanUpdate: (details){
-                if (details.delta.dx > 0){
-                  //todo: right swipe
-                  setState(() => Ag = true);
-                  Timer(
-                    Duration(milliseconds: 500),
-                    () => setState(() => Ag = false)
-                  );
-                }
-                else if (details.delta.dx < 0){
-                  //todo: left swipe
-                  setState(() => disAg = true);
-                  Timer(
-                      Duration(milliseconds: 500),
-                      () => setState(() => disAg = false)
-                  );
-                }
-              },
-              child: SinglePost()
-            ),
-          ),
+        child: LayoutBuilder(
+          builder: (context, constraints){
+            return Scaffold(
+              appBar: TopBar(title: 'Whyyu'),
+              body: PageView.builder(
+                itemCount: 10,
+                controller: controller,
+                scrollDirection: Axis.vertical,
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) => GestureDetector(
+                    onPanUpdate: (details){
+                      if (details.delta.dx > 0){
+                        //todo: right swipe
+                        setState(() => Ag = true);
+                        Timer(
+                            Duration(milliseconds: 500),
+                                () => setState(() => Ag = false)
+                        );
+                      }
+                      else if (details.delta.dx < 0){
+                        //todo: left swipe
+                        setState(() => disAg = true);
+                        Timer(
+                            Duration(milliseconds: 500),
+                                () => setState(() => disAg = false)
+                        );
+                      }
+                    },
+                    child: SinglePost()
+                ),
+              ),
 
-          floatingActionButton: Padding(
-            padding: EdgeInsets.only(bottom: 50.0),
-            child: FloatingActionButton(
-              onPressed: () => Navigator.push(context, SlideTopRoute(page: AddPost())),
-              backgroundColor: Color(0xff73aef5),
-              child: Icon(FontAwesomeIcons.plus, color: Colors.white),
-            ),
-          ),
-        ),
+              floatingActionButton: Padding(
+                padding: EdgeInsets.only(bottom: constraints.maxHeight >= 1440 && constraints.maxHeight < 2220 ? 30.0 : 40.0),
+                child: FloatingActionButton(
+                  onPressed: () => Navigator.push(context, SlideTopRoute(page: AddPost())),
+                  backgroundColor: Color(0xff73aef5),
+                  child: Icon(FontAwesomeIcons.plus, color: Colors.white),
+                ),
+              ),
+            );
+          },
+        )
       ),
     );
   }
@@ -105,182 +110,214 @@ class _SinglePostState extends State<SinglePost> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Column(
+    return LayoutBuilder(
+      builder: (context, constraints){
+        return Stack(
           children: <Widget>[
-            Row(
+            Column(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(10.0),
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage('images/pic.jpg'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.all(10.0),
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage('images/pic.jpg'),
+                          ),
+                        ),
+
+                        Text('Kunal Sahni',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold
+                          ),
+                        )
+                      ],
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.only(right: 10.0),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(FontAwesomeIcons.thumbsUp, color: Colors.lightBlue, size: 20.0),
+                          //todo: find agree %age nd show it here
+                          Padding(
+                            padding: EdgeInsets.only(left: 5.0),
+                            child: Text('69%',
+                              style: TextStyle(
+                                color: Colors.lightBlue,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+
+                Image.asset('images/something.jpg',
+                  width: MediaQuery.of(context).size.width,
+                  height: constraints.maxHeight >= 660 ? 280.0 : 200.0,
+                  fit: BoxFit.fitWidth,
+                ),
+
+                //TODO: heading
+                Padding(
+                  padding: EdgeInsets.only(left: 20.0),
+                  child: Text("Some shitty thought you can\'t imagine",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0
+                    ),
                   ),
                 ),
 
-                Text('Kunal Sahni',
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 16.0
+                //todo: description
+                Container(
+                  padding: EdgeInsets.only(left: 20.0, top: 10.0),
+                  child: Text("No one gives a fuck to this post so scroll down, you'll find another. Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content. It's also called placeholder (or filler) text. It's a convenient tool for mock-ups. It helps to outline the visual elements of a document or presentation, eg typography, font, or layout.",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15.0,
+                    ),
+                    overflow: TextOverflow.fade,
+                    maxLines: 6,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+
+                Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(top: 10.0, left: 20.0),
+                    child: RichText(
+                      text: TextSpan(
+                          style: TextStyle(
+                              color: Colors.lightBlue,
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Open Sans',
+                              decoration: TextDecoration.underline,
+                              letterSpacing: 1.0,
+                              decorationThickness: 2.0
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'Read more',
+                              recognizer: TapGestureRecognizer()..onTap = () => print('something'),
+                            )
+                          ]
+                      ),
+                    )
+                ),
+
+                //todo: buttons
+                Container(
+                  padding: EdgeInsets.only(top: 40.0, left: 5.0, right: 5.0),
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: (){},
+                        child: Row(
+                          children: <Widget>[
+                            Icon(FontAwesomeIcons.thumbsUp, color: Color(0xff73aef5), size: 18.0),
+                            Padding(
+                              padding: EdgeInsets.only(left: 10.0),
+                              child: Text('Agree',
+                                style: TextStyle(
+                                    color: Color(0xff73aef5),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+
+                      Container(
+                        width: 1.0,
+                        height: 30.0,
+                        color: Colors.grey,
+                      ),
+
+                      InkWell(
+                        onTap: (){},
+                        child: Row(
+                          children: <Widget>[
+                            Icon(FontAwesomeIcons.thumbsDown, color: Color(0xff73aef5), size: 18.0),
+                            Padding(
+                              padding: EdgeInsets.only(left: 10.0),
+                              child: Text('Disagree',
+                                style: TextStyle(
+                                    color: Color(0xff73aef5),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+
+                      Container(
+                        width: 1.0,
+                        height: 30.0,
+                        color: Colors.grey,
+                      ),
+
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => Comments()));
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Icon(FontAwesomeIcons.commentAlt, color: Color(0xff73aef5), size: 18.0),
+                            Padding(
+                              padding: EdgeInsets.only(left: 10.0),
+                              child: Text('Comment',
+                                style: TextStyle(
+                                    color: Color(0xff73aef5),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 )
               ],
             ),
 
-            Image.asset('images/something.jpg',
-              width: MediaQuery.of(context).size.width,
-            ),
-
-            //TODO: heading
-            Padding(
-              padding: EdgeInsets.only(left: 20.0),
-              child: Text("Some shitty thought you can\'t imagine",
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0
-                ),
+            Fade(
+              duration: Duration(milliseconds: 400),
+              visible: disAg,
+              child: Container(
+                color: Color(0xffEF405B).withOpacity(0.4),
               ),
             ),
 
-            //todo: description
-            Container(
-              padding: EdgeInsets.only(left: 20.0, top: 10.0),
-              child: Text("No one gives a fuck to this post so scroll down, you'll find another. Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content. It's also called placeholder (or filler) text. It's a convenient tool for mock-ups. It helps to outline the visual elements of a document or presentation, eg typography, font, or layout.",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15.0,
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 6,
-                textAlign: TextAlign.start,
+            Fade(
+              duration: Duration(milliseconds: 400),
+              visible: Ag,
+              child: Container(
+                color: Colors.green.withOpacity(0.3),
               ),
             ),
-
-            Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(top: 10.0, left: 20.0),
-              child: RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    color: Color(0xff73aef5),
-                    fontSize: 17.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Open Sans',
-                    decoration: TextDecoration.underline,
-                    letterSpacing: 1.0,
-                    decorationThickness: 2.0
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'Read more',
-                      recognizer: TapGestureRecognizer()..onTap = () => print('something'),
-                    )
-                  ]
-                ),
-              )
-            ),
-
-            //todo: buttons
-            Container(
-              padding: EdgeInsets.only(top: 40.0),
-              width: MediaQuery.of(context).size.width,
-              color: Colors.transparent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  InkWell(
-                    onTap: (){},
-                    child: Row(
-                      children: <Widget>[
-                        Icon(FontAwesomeIcons.arrowAltCircleUp, color: Color(0xff73aef5), size: 18.0),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10.0),
-                          child: Text('Agree',
-                            style: TextStyle(
-                              color: Color(0xff73aef5),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    width: 1.0,
-                    height: 30.0,
-                    color: Colors.grey,
-                  ),
-
-                  InkWell(
-                    onTap: (){},
-                    child: Row(
-                      children: <Widget>[
-                        Icon(FontAwesomeIcons.arrowAltCircleDown, color: Color(0xff73aef5), size: 18.0),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10.0),
-                          child: Text('Disagree',
-                            style: TextStyle(
-                                color: Color(0xff73aef5),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    width: 1.0,
-                    height: 30.0,
-                    color: Colors.grey,
-                  ),
-
-                  InkWell(
-                    onTap: (){},
-                    child: Row(
-                      children: <Widget>[
-                        Icon(FontAwesomeIcons.comment, color: Color(0xff73aef5), size: 18.0),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10.0),
-                          child: Text('Comment',
-                            style: TextStyle(
-                                color: Color(0xff73aef5),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            )
           ],
-        ),
-
-        Fade(
-          duration: Duration(milliseconds: 400),
-          visible: disAg,
-          child: Container(
-            color: Color(0xffEF405B).withOpacity(0.4),
-          ),
-        ),
-
-        Fade(
-          duration: Duration(milliseconds: 400),
-          visible: Ag,
-          child: Container(
-            color: Color(0xff18d26e).withOpacity(0.3),
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 }
