@@ -18,6 +18,25 @@ class Prefs with ChangeNotifier{
   }
 }
 
+class Count with ChangeNotifier{
+  int checkCount = 0;
+
+  void setCount(int c){
+    checkCount = c;
+    notifyListeners();
+  }
+
+  void incCount(){
+    checkCount++;
+    notifyListeners();
+  }
+
+  void decCount(){
+    checkCount--;
+    notifyListeners();
+  }
+}
+
 class Utils{
   List<String> items = [
     'Movies',

@@ -9,8 +9,8 @@ import 'transitions/fade_route.dart';
 
 void main(){
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Color(0xff73aef5),
-    statusBarColor: Color(0xff73aef5),
+    systemNavigationBarColor: Colors.white,
+    statusBarColor: Colors.white,
   ));
   runApp(MyApp());
 }
@@ -18,13 +18,16 @@ void main(){
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<Prefs>(
-      create: (_) => Prefs(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Prefs>(create: (_) => Prefs()),
+        ChangeNotifierProvider<Count>(create: (_) => Count())
+      ],
       child: MaterialApp(
         title: 'Xapp',
         theme: ThemeData(
-          primaryColor: Color(0xff73aef5),
-          accentColor: Color(0xff73aef5),
+          primaryColor: Colors.white,
+          accentColor: Colors.white,
           fontFamily: 'Open Sans',
         ),
         debugShowCheckedModeBanner: false,

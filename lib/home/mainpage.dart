@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fade/fade.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:xapp/home/read_more.dart';
 
 import 'comments.dart';
 import '../transitions/slide_top_route.dart';
@@ -209,7 +210,18 @@ class _SinglePostState extends State<SinglePost> with SingleTickerProviderStateM
                           children: <TextSpan>[
                             TextSpan(
                               text: 'Read more',
-                              recognizer: TapGestureRecognizer()..onTap = () => print('something'),
+                              recognizer: TapGestureRecognizer()..onTap = (){
+                                  Navigator.push(context, SlideTopRoute(page: ReadMore(
+                                    //todo: give all these values dynamically
+                                    title: "Some shitty thought you can\'t imagine",
+                                    desc: "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used before final copy is available, but it may also be used to temporarily replace copy in a process called greeking, which allows designers to consider form without the meaning of the text influencing the design.Lorem ipsum is typically a corrupted version of De finibus bonorum et malorum, a first-century BCE text by the Roman statesman and philosopher Cicero, with words altered, added, and removed to make it nonsensical, improper Latin.",
+                                    pUrl: 'images/pic.jpg',
+                                    picUrl: 'images/something.jpg',
+                                    ag: 5000,
+                                    disAg: 1000,
+                                    uName: 'IamKSahni',
+                                  )));
+                              },
                             )
                           ]
                       ),

@@ -25,16 +25,16 @@ class _AddPostState extends State<AddPost> {
       ),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Color(0xff73aef5),
           elevation: 10.0,
           leading: IconButton(
-            icon: Icon(LineIcons.close, color: Color(0xff73aef5), size: 30.0),
+            icon: Icon(LineIcons.close, color: Colors.white, size: 30.0),
             onPressed: () => Navigator.pop(context),
           ),
 
           title: Text('Create Post',
             style: TextStyle(
-              color: Color(0xff73aef5),
+              color: Colors.white,
               fontWeight: FontWeight.bold
             ),
           ),
@@ -46,7 +46,7 @@ class _AddPostState extends State<AddPost> {
                 width: 70.0,
                 margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
                 decoration: BoxDecoration(
-                  color: Color(0xff73aef5),
+                  color: Colors.white,
                   shape: BoxShape.circle
                 ),
                 child: Row(
@@ -56,14 +56,14 @@ class _AddPostState extends State<AddPost> {
                       padding: EdgeInsets.only(right: 5.0),
                       child: Text('Skip',
                         style: TextStyle(
-                            color: Colors.white
+                            color: Color(0xff73aef5)
                         ),
                       ),
                     ),
 
                     Icon(Icons.arrow_forward_ios,
                       size: 10.0,
-                      color: Colors.white,
+                      color: Color(0xff73aef5),
                     )
                   ],
                 ),

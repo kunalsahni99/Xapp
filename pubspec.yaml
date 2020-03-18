@@ -41,6 +41,7 @@ dev_dependencies:
   line_icons: ^0.2.0
   fade: ^1.0.0
   dotted_border: ^1.0.5
+  circular_check_box: ^1.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -25,19 +25,24 @@ class _FurtherInfoState extends State<FurtherInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xff73aef5),
         elevation: 10.0,
         leading: IconButton(
-          icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Color(0xff73aef5), size: 30.0),
+          icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Colors.white, size: 30.0),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Give your post a...'),
+        title: Text('Give your post a...',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold
+          ),
+        ),
         actions: <Widget>[
           FlatButton(
             color: Colors.transparent,
             child: Text('POST',
               style: TextStyle(
-                color: Color(0xff73aef5),
+                color: Colors.white,
                 fontSize: 20.0
               ),
             ),
@@ -94,6 +99,9 @@ class _FurtherInfoState extends State<FurtherInfo> {
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Title',
+                      labelStyle: TextStyle(
+                        color: Colors.black
+                      )
                     ),
                     maxLines: 3,
                     focusNode: focusNode1,
@@ -109,6 +117,9 @@ class _FurtherInfoState extends State<FurtherInfo> {
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Description',
+                        labelStyle: TextStyle(
+                            color: Colors.black
+                        )
                     ),
                     maxLines: 10,
                     maxLength: 1000,

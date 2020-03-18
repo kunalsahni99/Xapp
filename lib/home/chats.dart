@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../transitions/slide_top_route.dart';
 import '../utils/prefs.dart';
+import 'follow_list.dart';
 import 'user_avatar.dart';
 
 class Chats extends StatefulWidget {
@@ -20,7 +22,7 @@ class _ChatsState extends State<Chats> {
         child: SafeArea(
           top: true,
           child: Container(
-            color: Colors.transparent,
+            color: Color(0xff73aef5),
             child: Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10.0),
               child: Row(
@@ -29,17 +31,17 @@ class _ChatsState extends State<Chats> {
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Color(0xff73aef5)
+                      color: Colors.white
                     ),
                     child: IconButton(
-                      icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Colors.white),
+                      icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Color(0xff73aef5)),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
 
                   Text('Inbox',
                     style: TextStyle(
-                      color: Color(0xff73aef5),
+                      color: Colors.white,
                       fontSize: 22.0,
                       fontWeight: FontWeight.bold
                     ),
@@ -48,11 +50,11 @@ class _ChatsState extends State<Chats> {
                   Container(
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Color(0xff73aef5)
+                        color: Colors.white
                     ),
                     child: Center(
                       child: IconButton(
-                        icon: Icon(FontAwesomeIcons.search, color: Colors.white),
+                        icon: Icon(FontAwesomeIcons.search, color: Color(0xff73aef5)),
                         onPressed: (){},
                       ),
                     ),
@@ -67,7 +69,7 @@ class _ChatsState extends State<Chats> {
       body: ListView.separated(
         itemCount: 10,
         separatorBuilder: (context, index) => Padding(
-          padding: EdgeInsets.only(left: 20.0, right: 20.0),
+          padding: EdgeInsets.only(left: 30.0, right: 30.0),
           child: Divider(),
         ),
         itemBuilder: (context, index){
@@ -130,8 +132,8 @@ class _ChatsState extends State<Chats> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        backgroundColor: Color(0xff73aef5),
+        onPressed: () => Navigator.push(context, SlideTopRoute(page: FollowList())),
+        backgroundColor: Colors.lightBlue,
         child: Icon(FontAwesomeIcons.solidEnvelope, color: Colors.white),
       ),
     );
