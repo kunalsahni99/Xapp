@@ -9,8 +9,8 @@ import 'transitions/fade_route.dart';
 
 void main(){
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.white,
-    statusBarColor: Colors.white,
+    systemNavigationBarColor: Color(0xff73aef5),
+    statusBarColor: Color(0xff73aef5),
   ));
   runApp(MyApp());
 }
@@ -26,8 +26,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Xapp',
         theme: ThemeData(
-          primaryColor: Colors.white,
-          accentColor: Colors.white,
+          primaryColor: Color(0xff73aef5),
+          accentColor: Color(0xff73aef5),
           fontFamily: 'Open Sans',
         ),
         debugShowCheckedModeBanner: false,

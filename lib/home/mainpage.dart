@@ -6,8 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fade/fade.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:xapp/home/read_more.dart';
 
+import 'profile.dart';
+import 'read_more.dart';
 import 'comments.dart';
 import '../transitions/slide_top_route.dart';
 import 'add_post.dart';
@@ -57,7 +58,7 @@ class _MainPageState extends State<MainPage> {
         child: LayoutBuilder(
           builder: (context, constraints){
             return Scaffold(
-              appBar: TopBar(title: 'Whyyu'),
+              appBar: TopBar(title: 'WhyyU'),
               body: PageView.builder(
                 itemCount: 10,
                 controller: controller,
@@ -90,7 +91,7 @@ class _MainPageState extends State<MainPage> {
                 padding: EdgeInsets.only(bottom: constraints.maxHeight >= 1440 && constraints.maxHeight < 2220 ? 30.0 : 40.0),
                 child: FloatingActionButton(
                   onPressed: () => Navigator.push(context, SlideTopRoute(page: AddPost())),
-                  backgroundColor: Color(0xff73aef5),
+                  backgroundColor: Colors.lightBlue,
                   child: Icon(FontAwesomeIcons.plus, color: Colors.white),
                 ),
               ),
@@ -129,11 +130,14 @@ class _SinglePostState extends State<SinglePost> with SingleTickerProviderStateM
                           ),
                         ),
 
-                        Text('Kunal Sahni',
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold
+                        GestureDetector(
+                          onTap: () => Navigator.push(context, SlideTopRoute(page: Profile(isViewedProfile: true))),
+                          child: Text('IamKSahni',
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold
+                            ),
                           ),
                         )
                       ],

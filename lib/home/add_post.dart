@@ -6,7 +6,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:xapp/home/further_info.dart';
 
-
+import '../utils/prefs.dart';
 import '../utils/fade_in.dart';
 import '../transitions/slide_left_route.dart';
 
@@ -77,53 +77,7 @@ class _AddPostState extends State<AddPost> {
           children: <Widget>[
             InkWell(
               onTap: (){
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => Container(
-                    height: 200.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 2),
-                          height: 5.0,
-                          width: 100.0,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(5.0)
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 16.0, top: 10.0, bottom: 10.0),
-                          child: Text('Select image using',
-                            style: TextStyle(
-                              fontSize: 22.0
-                            ),
-                          ),
-                        ),
-                        ListTile(
-                          leading: Icon(FontAwesomeIcons.cameraRetro, size: 30.0),
-                          title: Text('Camera'),
-                          onTap: (){
-                            //todo: open camera
-
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(FontAwesomeIcons.solidImages, size: 30.0),
-                          title: Text('Gallery'),
-                          onTap: (){
-                            //todo: open gallery
-
-                          },
-                        ),
-                      ],
-                    ),
-                  )
-                );
+                Utils().bottomSheet(context);
               },
               child: FadeIn(
                 delay: 1.33,

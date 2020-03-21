@@ -35,7 +35,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget{
               height: 50,
               minWidth: 50,
               elevation: 0.0,
-              onPressed: () => Navigator.push(context,SlideRightRoute(page: Profile())),
+              onPressed: () => Navigator.push(context,SlideRightRoute(page: Profile(isViewedProfile: false))),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(bottomRight: Radius.circular(30))
               ),
@@ -44,7 +44,6 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget{
               ),
             ),
           ),
-
 
           Card(
             shape: RoundedRectangleBorder(

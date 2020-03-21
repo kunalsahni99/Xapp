@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:async';
 import 'package:collection/collection.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:provider/provider.dart';
 import '../utils/prefs.dart';
@@ -165,7 +166,7 @@ class _PreferencesState extends State<Preferences> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Icon(Icons.check, color: Colors.white, size: 35.0),
+                        Icon(FontAwesomeIcons.check, color: Colors.white, size: 35.0),
                         Padding(
                           padding: EdgeInsets.only(top: 25.0),
                           child: Text(itemState.selected.length.toString(),

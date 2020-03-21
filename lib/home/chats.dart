@@ -22,21 +22,16 @@ class _ChatsState extends State<Chats> {
         child: SafeArea(
           top: true,
           child: Container(
+            height: 60.0,
             color: Color(0xff73aef5),
             child: Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white
-                    ),
-                    child: IconButton(
-                      icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Color(0xff73aef5)),
-                      onPressed: () => Navigator.pop(context),
-                    ),
+                  IconButton(
+                    icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
                   ),
 
                   Text('Inbox',
@@ -47,17 +42,9 @@ class _ChatsState extends State<Chats> {
                     ),
                   ),
 
-                  Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white
-                    ),
-                    child: Center(
-                      child: IconButton(
-                        icon: Icon(FontAwesomeIcons.search, color: Color(0xff73aef5)),
-                        onPressed: (){},
-                      ),
-                    ),
+                  IconButton(
+                    icon: Icon(FontAwesomeIcons.search, color: Colors.white),
+                    onPressed: (){},
                   ),
                 ],
               ),

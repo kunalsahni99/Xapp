@@ -26,101 +26,112 @@ class _FollowListState extends State<FollowList> {
       value: SystemUiOverlayStyle(
           statusBarColor: Colors.white
       ),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xff73aef5),
-          leading: IconButton(
-            icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Colors.white),
-            onPressed: (){
-              countState.setCount(0);
-              Navigator.pop(context);
-            },
-          ),
-          title: Text('New message',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Chat',
-                style: TextStyle(
-                  color: countState.checkCount > 0 ? Colors.white : Color(0xff73aef5),
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-              onPressed: //todo: If no account has been selected, pass null here
-              countState.checkCount > 0 ? (){
-                Navigator.pushReplacement(context, SlideTopRoute(page: countState.checkCount > 1 ? GrpSettings() : ChatScreen()));
+      child: WillPopScope(
+        onWillPop: (){
+          countState.setCount(0);
+          countState.setList();
+          return Future.value(true);
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0xff73aef5),
+            leading: IconButton(
+              icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Colors.white),
+              onPressed: (){
+                Navigator.pop(context);
                 countState.setCount(0);
-              } : null,
-            )
-          ],
-        ),
-
-        body: ListView(
-          children: <Widget>[
-            //todo: a search field for searching accounts
-            Padding(
-              padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(40.0)),
-                    borderSide: BorderSide(
-                      color: Colors.white,
-                      width: 0.0
-                    ),
+                countState.setList();
+              },
+            ),
+            title: Text('New message',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Chat',
+                  style: TextStyle(
+                    color: countState.checkCount > 0 ? Colors.white : Color(0xff73aef5),
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(40.0)),
-                    borderSide: BorderSide(
+                ),
+                onPressed: //todo: If no account has been selected, pass null here
+                countState.checkCount > 0 ? (){
+                  Navigator.pushReplacement(context, SlideTopRoute(page: countState.checkCount > 1 ? GrpSettings(
+                    accounts: countState.selectedAcc,
+                  ) : ChatScreen(uName: countState.selectedAcc[0]['uName'],
+                    pUrl: countState.selectedAcc[0]['pUrl'],
+                  )));
+                } : null,
+              )
+            ],
+          ),
+
+          body: ListView(
+            children: <Widget>[
+              //todo: a search field for searching accounts
+              Padding(
+                padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(40.0)),
+                      borderSide: BorderSide(
                         color: Colors.white,
                         width: 0.0
+                      ),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(40.0)),
+                      borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 0.0
+                      ),
+                    ),
+                    filled: true,
+                    hintText: 'Search',
+                    prefixIcon: Icon(FontAwesomeIcons.search, color: Colors.lightBlue, size: 20),
                   ),
-                  filled: true,
-                  hintText: 'Search',
-                  prefixIcon: Icon(FontAwesomeIcons.search, color: Colors.lightBlue, size: 20),
                 ),
               ),
-            ),
 
-            Padding(
-              padding: EdgeInsets.only(top: 10.0, left: 20.0),
-              child: Text('Suggested',
-                style: TextStyle(
-                  fontSize: 18.0,
+              Padding(
+                padding: EdgeInsets.only(top: 10.0, left: 20.0),
+                child: Text('Suggested',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                  ),
                 ),
               ),
-            ),
 
-            //todo: change this list when text field value changes
-            ListView(
-              shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
-              //todo: list of all followers
-              children: <Widget>[
-                SingleAccount(name: 'Kunal Sahni', uName: 'IamKsahni', picUrl: 'images/pic.jpg'),
-                SingleAccount(name: 'Vipul Dubey', uName: 'SarcasticKid', picUrl: 'images/pic1.jpg'),
-                SingleAccount(name: 'Suraj Jha', uName: '@zero', picUrl: 'images/pic2.jpg'),
-                SingleAccount(name: 'Kunal Sahni', uName: 'IamKsahni', picUrl: 'images/pic.jpg'),
-                SingleAccount(name: 'Vipul Dubey', uName: 'SarcasticKid', picUrl: 'images/pic1.jpg'),
-                SingleAccount(name: 'Suraj Jha', uName: '@zero', picUrl: 'images/pic2.jpg'),
-                SingleAccount(name: 'Kunal Sahni', uName: 'IamKsahni', picUrl: 'images/pic.jpg'),
-                SingleAccount(name: 'Vipul Dubey', uName: 'SarcasticKid', picUrl: 'images/pic1.jpg'),
-                SingleAccount(name: 'Suraj Jha', uName: '@zero', picUrl: 'images/pic2.jpg'),
-                SingleAccount(name: 'Kunal Sahni', uName: 'IamKsahni', picUrl: 'images/pic.jpg'),
-                SingleAccount(name: 'Vipul Dubey', uName: 'SarcasticKid', picUrl: 'images/pic1.jpg'),
-                SingleAccount(name: 'Suraj Jha', uName: '@zero', picUrl: 'images/pic2.jpg'),
-                SingleAccount(name: 'Kunal Sahni', uName: 'IamKsahni', picUrl: 'images/pic.jpg'),
-                SingleAccount(name: 'Vipul Dubey', uName: 'SarcasticKid', picUrl: 'images/pic1.jpg'),
-                SingleAccount(name: 'Suraj Jha', uName: '@zero', picUrl: 'images/pic2.jpg'),
-              ],
-            )
-          ],
+              //todo: change this list when text field value changes
+              ListView(
+                shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
+                //todo: list of all followers
+                children: <Widget>[
+                  SingleAccount(name: 'Kunal Sahni', uName: 'IamKsahni', picUrl: 'images/pic.jpg'),
+                  SingleAccount(name: 'Vipul Dubey', uName: 'SarcasticKid', picUrl: 'images/pic1.jpg'),
+                  SingleAccount(name: 'Suraj Jha', uName: '@zero', picUrl: 'images/pic2.jpg'),
+                  SingleAccount(name: 'Kunal Sahni', uName: 'IamKsahni', picUrl: 'images/pic.jpg'),
+                  SingleAccount(name: 'Vipul Dubey', uName: 'SarcasticKid', picUrl: 'images/pic1.jpg'),
+                  SingleAccount(name: 'Suraj Jha', uName: '@zero', picUrl: 'images/pic2.jpg'),
+                  SingleAccount(name: 'Kunal Sahni', uName: 'IamKsahni', picUrl: 'images/pic.jpg'),
+                  SingleAccount(name: 'Vipul Dubey', uName: 'SarcasticKid', picUrl: 'images/pic1.jpg'),
+                  SingleAccount(name: 'Suraj Jha', uName: '@zero', picUrl: 'images/pic2.jpg'),
+                  SingleAccount(name: 'Kunal Sahni', uName: 'IamKsahni', picUrl: 'images/pic.jpg'),
+                  SingleAccount(name: 'Vipul Dubey', uName: 'SarcasticKid', picUrl: 'images/pic1.jpg'),
+                  SingleAccount(name: 'Suraj Jha', uName: '@zero', picUrl: 'images/pic2.jpg'),
+                  SingleAccount(name: 'Kunal Sahni', uName: 'IamKsahni', picUrl: 'images/pic.jpg'),
+                  SingleAccount(name: 'Vipul Dubey', uName: 'SarcasticKid', picUrl: 'images/pic1.jpg'),
+                  SingleAccount(name: 'Suraj Jha', uName: '@zero', picUrl: 'images/pic2.jpg'),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -147,7 +158,20 @@ class _SingleAccountState extends State<SingleAccount> {
       onTap: (){
         setState((){
           isChecked = !isChecked;
-          isChecked ? countState.incCount() : countState.decCount();
+          if (isChecked){
+            countState.incCount();
+            countState.addAcc({
+              'uName': widget.uName,
+              'pUrl': widget.picUrl
+            });
+          }
+          else{
+            countState.decCount();
+            countState.removeAcc({
+              'uName': widget.uName,
+              'pUrl': widget.picUrl
+            });
+          }
         });
       },
       child: ListTile(
@@ -177,7 +201,20 @@ class _SingleAccountState extends State<SingleAccount> {
           onChanged: (x){
             setState(() {
               isChecked = x;
-              x ? countState.incCount() : countState.decCount();
+              if (isChecked){
+                countState.incCount();
+                countState.addAcc({
+                  'uName': widget.uName,
+                  'pUrl': widget.picUrl
+                });
+              }
+              else{
+                countState.decCount();
+                countState.removeAcc({
+                  'uName': widget.uName,
+                  'pUrl': widget.picUrl
+                });
+              }
             });
           },
           activeColor: Colors.lightBlue,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../utils/prefs.dart';
 import '../transitions/slide_top_route.dart';
 import 'comments.dart';
 
@@ -32,7 +31,7 @@ class _ReadMoreState extends State<ReadMore> {
       appBar: AppBar(
         backgroundColor: Color(0xff73aef5),
         leading: IconButton(
-          icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 40.0),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Post',

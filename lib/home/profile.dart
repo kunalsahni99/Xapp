@@ -9,6 +9,9 @@ import '../transitions/slide_top_route.dart';
 import '../utils/prefs.dart';
 
 class Profile extends StatefulWidget {
+  final bool isViewedProfile;
+
+  Profile({this.isViewedProfile});
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -16,6 +19,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   TabController controller;
+  bool isFollowed = false;
   List<String> userPrefs = ['Sports',
     'Music',
     'Games',
@@ -57,7 +61,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('My Preferences',
+                Text(widget.isViewedProfile ? 'Preferences' : 'My Preferences',
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -65,12 +69,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   ),
                 ),
 
-                IconButton(
-                  icon: Icon(Icons.edit, color: Color(0xff73aef5), size: 25.0),
-                  onPressed: () {
-                    Navigator.push(context, SlideTopRoute(page: Preferences(userPrefs: userPrefs)));
-                  },
-                )
+                widget.isViewedProfile ?
+                  Container() :
+                  IconButton(
+                    icon: Icon(Icons.edit, color: Color(0xff73aef5), size: 25.0),
+                    onPressed: () {
+                      Navigator.push(context, SlideTopRoute(page: Preferences(userPrefs: userPrefs)));
+                    },
+                  )
               ],
             ),
           ),
@@ -198,16 +204,19 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                IconButton(
-                                  icon: Icon(FontAwesomeIcons.powerOff,
-                                      color: Colors.white, size: 25.0),
-                                  onPressed: () {
-                                    //todo: Logout function
-                                  },
+                                Opacity(
+                                  opacity: widget.isViewedProfile ? 0.0 : 1.0,
+                                  child: IconButton(
+                                    icon: Icon(FontAwesomeIcons.powerOff,
+                                        color: Colors.white, size: 25.0),
+                                    onPressed: () {
+                                      //todo: Logout function
+                                    },
+                                  ),
                                 ),
 
                                 Padding(
-                                  padding: EdgeInsets.only(left: 30.0),
+                                  padding: EdgeInsets.only(left: widget.isViewedProfile ? 10.0 : 30.0),
                                   child: InkWell(
                                     onTap: () => Navigator.push(context, SlideTopRoute(page: EditProfile())),
                                     child: Row(
@@ -220,10 +229,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                           ),
                                         ),
 
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 10.0),
-                                          child: Icon(Icons.edit, color: Colors.white, size: 25.0),
-                                        ),
+                                        widget.isViewedProfile ?
+                                          Container() :
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 10.0),
+                                            child: Icon(Icons.edit, color: Colors.white, size: 25.0),
+                                          )
                                       ],
                                     ),
                                   ),
@@ -235,11 +246,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                       shape: BoxShape.circle
                                   ),
                                   child: IconButton(
-                                    icon: Icon(Utils().retIOS()
-                                        ? Icons.arrow_forward_ios
-                                        : Icons.arrow_forward,
+                                    padding: EdgeInsets.only(top: widget.isViewedProfile ? 5.0 : 0.0),
+                                    icon: Icon(widget.isViewedProfile ?
+                                          Icons.keyboard_arrow_down :
+                                          Utils().retIOS()
+                                            ? Icons.arrow_forward_ios
+                                            : Icons.arrow_forward,
                                         color: Color(0xff73aef5),
-                                        size: 25.0
+                                        size: widget.isViewedProfile ? 30.0 : 25.0
                                     ),
                                     onPressed: () => Navigator.pop(context),
                                   ),
@@ -283,20 +297,23 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     Positioned(
                                       bottom: 0.0,
                                       right: 0.0,
-                                      child: InkWell(
-                                        onTap: () {
-                                          //todo: change profile pic function
+                                      child: Opacity(
+                                        opacity: widget.isViewedProfile ? 0.0 : 1.0,
+                                        child: InkWell(
+                                          onTap: () {
+                                            //todo: change profile pic function
 
-                                        },
-                                        child: Container(
-                                          width: 40.0,
-                                          height: 40.0,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xff73aef5),
-                                              shape: BoxShape.circle
+                                          },
+                                          child: Container(
+                                            width: 40.0,
+                                            height: 40.0,
+                                            decoration: BoxDecoration(
+                                                color: Color(0xff73aef5),
+                                                shape: BoxShape.circle
+                                            ),
+                                            child: Icon(FontAwesomeIcons.plus,
+                                                color: Colors.white, size: 20.0),
                                           ),
-                                          child: Icon(FontAwesomeIcons.plus,
-                                              color: Colors.white, size: 20.0),
                                         ),
                                       ),
                                     )
@@ -343,11 +360,27 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           ),
 
                           Opacity(
-                            opacity: 0.0,
-                            child: Container(
-                              height: 100.0,
-                            )
-                          ),
+                            opacity: widget.isViewedProfile ? 1.0 : 0.0,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 70.0),
+                              child: RaisedButton(
+                                color: isFollowed ? Colors.lightBlue : Colors.white,
+                                onPressed: (){
+                                  setState(() => isFollowed = !isFollowed);
+                                },
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0)
+                                ),
+                                child: Text(isFollowed ? 'Following' : 'Follow',
+                                  style: TextStyle(
+                                    color: isFollowed ? Colors.white : Colors.lightBlue,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
                         ],
                       )
                     ],
