@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+//todo: for keeping the count of preferences selected
 class Prefs with ChangeNotifier{
   List<String> selected = [];
   int length = 0;
@@ -19,9 +20,17 @@ class Prefs with ChangeNotifier{
   }
 }
 
+//todo: for keeping the count of no of accounts selected for chats
+//todo: plus keeping the count of no of chat bubbles selected
 class Count with ChangeNotifier{
-  int checkCount = 0;
+  int checkCount = 0, chatCount = 0;
   List<Map<String, String>> selectedAcc = [];
+  String selectedChat;
+
+  void setChat(String id){
+    selectedChat = id;
+    notifyListeners();
+  }
 
   void setList(){
     selectedAcc = [];
@@ -35,6 +44,21 @@ class Count with ChangeNotifier{
 
   void removeAcc(Map<String, String> acc){
     selectedAcc.remove(acc);
+    notifyListeners();
+  }
+
+  void setChatCount(){
+    chatCount = 0;
+    notifyListeners();
+  }
+
+  void incChatCount(){
+    chatCount++;
+    notifyListeners();
+  }
+
+  void decChatCount(){
+    chatCount--;
     notifyListeners();
   }
 

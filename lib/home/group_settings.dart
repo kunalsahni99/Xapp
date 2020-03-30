@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:xapp/home/chat_screen.dart';
+import 'package:xapp/transitions/slide_left_route.dart';
 
 import 'follow_list.dart';
 import '../utils/prefs.dart';
@@ -19,6 +21,7 @@ class GrpSettings extends StatefulWidget {
 class _GrpSettingsState extends State<GrpSettings> {
   final key = GlobalKey();
   String grpName, dropVal = Utils().durationItems[0];
+  TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +142,8 @@ class _GrpSettingsState extends State<GrpSettings> {
                   Container(
                     width: MediaQuery.of(context).size.width / 1.3,
                     padding: EdgeInsets.only(left: 10.0, right: 40.0),
-                    child: TextFormField(
+                    child: TextField(
+                      controller: controller,
                       style: TextStyle(
                         fontWeight: FontWeight.bold
                       ),
@@ -148,9 +152,6 @@ class _GrpSettingsState extends State<GrpSettings> {
                         helperText: 'Give a group name and an optional group icon',
                         helperMaxLines: 2
                       ),
-                      autovalidate: true,
-                      validator: (value) => value == null ? 'Please give a group name' : null,
-                      onSaved: (value) => grpName = value,
                     ),
                   ),
                 ],
@@ -245,7 +246,19 @@ class _GrpSettingsState extends State<GrpSettings> {
 
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.lightBlue,
-          onPressed: (){},
+          onPressed: (){
+            if (controller.text.isNotEmpty){
+              Navigator.pushReplacement(context, SlideLeftRoute(page: ChatScreen(
+                uName: controller.text,
+                pUrl: 'images/something.jpg',
+                isGroup: true,
+                participants: widget.accounts,
+              )));
+            }
+            else{
+              Fluttertoast.showToast(msg: 'Give a name to this group');
+            }
+          },
           child: Icon(FontAwesomeIcons.check, color: Colors.white),
         ),
       ),

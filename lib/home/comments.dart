@@ -224,9 +224,8 @@ class _CommentsState extends State<Comments> {
               height: 60.0,
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(
-                  width: 1.0,
-                  color: Colors.grey
+                border: Border(
+                  top: BorderSide(width: 1.0, color: Colors.lightBlue)
                 )
               ),
               child: Container(

@@ -42,6 +42,17 @@ dev_dependencies:
   fade: ^1.0.0
   dotted_border: ^1.0.5
   circular_check_box: ^1.0.1
+  bubble: ^1.1.9+1
+  flutter_launcher_icons: ^0.7.4
+  rect_getter: ^0.1.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path_android: "images/launcher_logo.jpg"
+  image_path_ios: "images/launcher_logo.jpg"
+  adaptive_icon_background: "images/just_bg.png"
+  adaptive_icon_foreground: "images/logo.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

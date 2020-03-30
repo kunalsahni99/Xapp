@@ -1,10 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:rect_getter/rect_getter.dart';
 
 import 'package:xapp/utils/prefs.dart';
 import 'home/mainpage.dart';
+import 'utils/fade_in.dart';
 import 'transitions/fade_route.dart';
 
 void main(){
@@ -43,13 +46,47 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  GlobalKey rectGetterKey = RectGetter.createGlobalKey();
+  final Duration animationDuration = Duration(milliseconds: 300);
+  Rect rect;
+  
+  
+  Widget ripple(){
+    if (rect == null){
+      return Container();
+    }
+    return AnimatedPositioned(
+      duration: animationDuration,
+      left: rect.left,
+      right: MediaQuery.of(context).size.width - rect.right,
+      top: rect.top,
+      bottom: MediaQuery.of(context).size.height - rect.bottom,
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white
+        ),
+      ),
+    );
+  }
 
+  void _onTimeOut(Widget page) async{
+    setState(() => rect = RectGetter.getRectFromKey(rectGetterKey));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() =>
+      rect = rect.inflate(1.3 * MediaQuery.of(context).size.longestSide));
+      Future.delayed(animationDuration, () {
+        Navigator.pushReplacement(context, FadeRouteBuilder(page: page)).then((_) => setState(() => rect = null));
+      });
+    });
+  }
+  
   @override
   void initState() {
     super.initState();
     Timer(
-      Duration(seconds: 2),
-      () => Navigator.pushReplacement(context, FadeRouteBuilder(page: MainPage()))
+      Duration(seconds: 5),
+      () => _onTimeOut(MainPage())
     );
   }
 
@@ -57,17 +94,59 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: Colors.white
+        statusBarColor: Color(0xff398ae5)
       ),
-      child: Scaffold(
-        body: Center(
-          child: Text('Xapp',
-            style: TextStyle(
-              fontSize: 30.0,
-              color: Colors.black
+      child: Stack(
+        children: <Widget>[
+          Scaffold(
+            body: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                    colors: [
+                      Color(0xff73aef5),
+                      Color(0xff61a4f1),
+                      Color(0xff478de0),
+                      Color(0xff398ae5)
+                    ],
+                    stops: [
+                      0.1,
+                      0.3,
+                      0.8,
+                      1
+                    ],
+                    focalRadius: 1.5
+                )
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RectGetter(
+                    key: rectGetterKey,
+                    child: Image.asset('images/logo.png',
+                      width: 500.0,
+                      height: 500.0,
+                      color: Colors.white,
+                    ),
+                  ),
+
+                  FadeIn(
+                    delay: 4.0,
+                    child: Text('WhyyU',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
+          ripple()
+        ],
       ),
     );
   }

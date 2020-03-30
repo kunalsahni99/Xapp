@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:xapp/home/chat_screen.dart';
 
 import '../transitions/slide_top_route.dart';
+import '../transitions/slide_left_route.dart';
 import '../utils/prefs.dart';
 import 'follow_list.dart';
 import 'user_avatar.dart';
@@ -61,8 +63,9 @@ class _ChatsState extends State<Chats> {
         ),
         itemBuilder: (context, index){
           return ListTile(
-            onTap: (){},
-
+            onTap: (){
+              Navigator.push(context, SlideLeftRoute(page: ChatScreen(uName: 'SarcasticKid', pUrl: 'images/pic1.jpg', isGroup: false)));
+            },
             //todo: user avatar
             leading: GestureDetector(
               onTap: (){
