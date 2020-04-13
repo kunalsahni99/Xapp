@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //todo: for keeping the count of preferences selected
 class Prefs with ChangeNotifier{
@@ -111,6 +112,8 @@ class Utils{
     'Forever'
   ];
 
+  Future<SharedPreferences> getPrefs() async => await SharedPreferences.getInstance();
+
   bool retIOS() => foundation.defaultTargetPlatform == foundation.TargetPlatform.iOS;
 
   void bottomSheet(BuildContext context){
@@ -142,7 +145,7 @@ class Utils{
                 ),
               ),
               ListTile(
-                leading: Icon(FontAwesomeIcons.cameraRetro, size: 30.0),
+                leading: Icon(FontAwesomeIcons.cameraRetro, size: 30.0, color: Colors.black54),
                 title: Text('Camera'),
                 onTap: (){
                   //todo: open camera
@@ -150,7 +153,7 @@ class Utils{
                 },
               ),
               ListTile(
-                leading: Icon(FontAwesomeIcons.solidImages, size: 30.0),
+                leading: Icon(FontAwesomeIcons.solidImages, size: 30.0, color: Colors.black54),
                 title: Text('Gallery'),
                 onTap: (){
                   //todo: open gallery

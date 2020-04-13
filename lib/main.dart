@@ -5,8 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:rect_getter/rect_getter.dart';
 
-import 'package:xapp/utils/prefs.dart';
-import 'home/mainpage.dart';
+import 'login/login.dart';
+import 'utils/prefs.dart';
+import 'login/onboarding.dart';
 import 'utils/fade_in.dart';
 import 'transitions/fade_route.dart';
 
@@ -49,7 +50,13 @@ class _SplashScreenState extends State<SplashScreen> {
   GlobalKey rectGetterKey = RectGetter.createGlobalKey();
   final Duration animationDuration = Duration(milliseconds: 300);
   Rect rect;
-  
+  var sp;
+  bool firsTime;
+
+  getPreferences() async{
+    sp = await Utils().getPrefs();
+    setState(() => firsTime = sp.getBool('firstTime') ?? true);
+  }
   
   Widget ripple(){
     if (rect == null){
@@ -84,9 +91,18 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    getPreferences();
     Timer(
-      Duration(seconds: 5),
-      () => _onTimeOut(MainPage())
+      Duration(seconds: 4),
+      (){
+        if (firsTime){
+          _onTimeOut(OnBoarding());
+        }
+        else{
+          //todo: check if user is logged in or not
+          _onTimeOut(Login());
+        }
+      }
     );
   }
 

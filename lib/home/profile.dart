@@ -1,17 +1,21 @@
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 
+import '../login/login.dart';
+import '../transitions/enter_exit_route.dart';
+import 'mainpage.dart';
 import 'edit_profile.dart';
 import 'preferences.dart';
 import '../transitions/slide_top_route.dart';
 import '../utils/prefs.dart';
 
 class Profile extends StatefulWidget {
+  final String uName, name, followers, following, bio, pUrl;
   final bool isViewedProfile;
 
-  Profile({this.isViewedProfile});
+  Profile({this.isViewedProfile, this.name, this.uName, this.following, this.followers, this.pUrl, this.bio});
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -48,11 +52,15 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.only(bottom: 10.0),
         children: <Widget>[
-          Text(
-            "Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content.",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black,
+          Padding(
+            padding: EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Text(
+              widget.bio,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18.0
+              ),
             ),
           ),
 
@@ -155,259 +163,266 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, isInnerBoxScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(
-                      50.0), bottomRight: Radius.circular(50.0))),
-              automaticallyImplyLeading: false,
-              backgroundColor: Color(0xff73aef5),
-              primary: false,
-              pinned: true,
-              floating: false,
-              expandedHeight: MediaQuery.of(context).size.width + 50.0,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                background: Padding(
-                  padding: EdgeInsets.only(top: 20.0),
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width + 50.0,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Color(0xff73aef5),
-                                Color(0xff61a4f1),
-                                Color(0xff478de0),
-                                Color(0xff398ae5)
-                              ],
-                              stops: [0.1, 0.4, 0.7, 0.9]
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+          statusBarColor: Color(0xff73aef5)
+      ),
+      child: Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (context, isInnerBoxScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(
+                        50.0), bottomRight: Radius.circular(50.0))),
+                automaticallyImplyLeading: false,
+                backgroundColor: Color(0xff73aef5),
+                primary: false,
+                pinned: true,
+                floating: false,
+                expandedHeight: MediaQuery.of(context).size.width + 50.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  background: Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width + 50.0,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Color(0xff73aef5),
+                                  Color(0xff61a4f1),
+                                  Color(0xff478de0),
+                                  Color(0xff398ae5)
+                                ],
+                                stops: [0.1, 0.4, 0.7, 0.9]
+                            ),
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(50.0),
+                                bottomRight: Radius.circular(50.0)),
                           ),
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(50.0),
-                              bottomRight: Radius.circular(50.0)),
                         ),
-                      ),
 
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Opacity(
-                                  opacity: widget.isViewedProfile ? 0.0 : 1.0,
-                                  child: IconButton(
-                                    icon: Icon(FontAwesomeIcons.powerOff,
-                                        color: Colors.white, size: 25.0),
-                                    onPressed: () {
-                                      //todo: Logout function
-                                    },
-                                  ),
-                                ),
-
-                                Padding(
-                                  padding: EdgeInsets.only(left: widget.isViewedProfile ? 10.0 : 30.0),
-                                  child: InkWell(
-                                    onTap: () => Navigator.push(context, SlideTopRoute(page: EditProfile())),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text('Profile',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 25.0,
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                        ),
-
-                                        widget.isViewedProfile ?
-                                          Container() :
-                                          Padding(
-                                            padding: EdgeInsets.only(left: 10.0),
-                                            child: Icon(Icons.edit, color: Colors.white, size: 25.0),
-                                          )
-                                      ],
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(10.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Opacity(
+                                    opacity: widget.isViewedProfile ? 0.0 : 1.0,
+                                    child: IconButton(
+                                      icon: Icon(FontAwesomeIcons.powerOff,
+                                          color: Colors.white, size: 25.0),
+                                      onPressed: () {
+                                        //todo: Logout function
+                                        Navigator.pop(context);
+                                        Navigator.pushReplacement(context, EnterExitRoute(enterPage: Login(), exitPage: MainPage()));
+                                      },
                                     ),
                                   ),
-                                ),
 
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle
-                                  ),
-                                  child: IconButton(
-                                    padding: EdgeInsets.only(top: widget.isViewedProfile ? 5.0 : 0.0),
-                                    icon: Icon(widget.isViewedProfile ?
-                                          Icons.keyboard_arrow_down :
-                                          Utils().retIOS()
-                                            ? Icons.arrow_forward_ios
-                                            : Icons.arrow_forward,
-                                        color: Color(0xff73aef5),
-                                        size: widget.isViewedProfile ? 30.0 : 25.0
-                                    ),
-                                    onPressed: () => Navigator.pop(context),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          Container(
-                            padding: EdgeInsets.only(bottom: 20.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    //todo: add following
-                                    Text('0',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.0
-                                      ),
-                                    ),
-
-                                    Text('Following',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.0
-                                      ),
-                                    )
-                                  ],
-                                ),
-
-                                Stack(
-                                  children: <Widget>[
-                                    CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          'images/pic.jpg'),
-                                      radius: 60.0,
-                                    ),
-
-                                    Positioned(
-                                      bottom: 0.0,
-                                      right: 0.0,
-                                      child: Opacity(
-                                        opacity: widget.isViewedProfile ? 0.0 : 1.0,
-                                        child: InkWell(
-                                          onTap: () {
-                                            //todo: change profile pic function
-
-                                          },
-                                          child: Container(
-                                            width: 40.0,
-                                            height: 40.0,
-                                            decoration: BoxDecoration(
-                                                color: Color(0xff73aef5),
-                                                shape: BoxShape.circle
+                                  Padding(
+                                    padding: EdgeInsets.only(left: widget.isViewedProfile ? 10.0 : 30.0),
+                                    child: InkWell(
+                                      onTap: () => Navigator.push(context, SlideTopRoute(page: EditProfile())),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text('Profile',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 25.0,
+                                                fontWeight: FontWeight.bold
                                             ),
-                                            child: Icon(FontAwesomeIcons.plus,
-                                                color: Colors.white, size: 20.0),
                                           ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
 
-                                Column(
-                                  children: <Widget>[
-                                    //todo: add followers
-                                    Text('200',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.0
+                                          widget.isViewedProfile ?
+                                            Container() :
+                                            Padding(
+                                              padding: EdgeInsets.only(left: 10.0),
+                                              child: Icon(Icons.edit, color: Colors.white, size: 25.0),
+                                            )
+                                        ],
                                       ),
                                     ),
+                                  ),
 
-                                    Text('Followers',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.0
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle
+                                    ),
+                                    child: IconButton(
+                                      padding: EdgeInsets.only(top: widget.isViewedProfile ? 5.0 : 0.0),
+                                      icon: Icon(widget.isViewedProfile ?
+                                            Icons.keyboard_arrow_down :
+                                            Utils().retIOS()
+                                              ? Icons.arrow_forward_ios
+                                              : Icons.arrow_forward,
+                                          color: Color(0xff73aef5),
+                                          size: widget.isViewedProfile ? 30.0 : 25.0
                                       ),
-                                    )
-                                  ],
-                                ),
-                              ],
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
 
-                          //todo: username
-                          Text('IamKSahni',
-                            style: TextStyle(
+                            Container(
+                              padding: EdgeInsets.only(bottom: 20.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      //todo: add following
+                                      Text(widget.following,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0
+                                        ),
+                                      ),
+
+                                      Text('Following',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0
+                                        ),
+                                      )
+                                    ],
+                                  ),
+
+                                  Stack(
+                                    children: <Widget>[
+                                      CircleAvatar(
+                                        backgroundImage: AssetImage(
+                                            widget.pUrl),
+                                        radius: 60.0,
+                                      ),
+
+                                      Positioned(
+                                        bottom: 0.0,
+                                        right: 0.0,
+                                        child: Opacity(
+                                          opacity: widget.isViewedProfile ? 0.0 : 1.0,
+                                          child: InkWell(
+                                            onTap: () {
+                                              //todo: change profile pic function
+
+                                            },
+                                            child: Container(
+                                              width: 40.0,
+                                              height: 40.0,
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xff73aef5),
+                                                  shape: BoxShape.circle
+                                              ),
+                                              child: Icon(FontAwesomeIcons.plus,
+                                                  color: Colors.white, size: 20.0),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+
+                                  Column(
+                                    children: <Widget>[
+                                      //todo: add followers
+                                      Text(widget.followers,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0
+                                        ),
+                                      ),
+
+                                      Text('Followers',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            //todo: username
+                            Text(widget.uName,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+
+                            //todo: actual name
+                            Text(widget.name,
+                              style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.w600
+                                fontSize: 15.0,
+                              ),
                             ),
-                          ),
 
-                          //todo: actual name
-                          Text('Kunal Sahni',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15.0,
-                            ),
-                          ),
-
-                          Opacity(
-                            opacity: widget.isViewedProfile ? 1.0 : 0.0,
-                            child: Padding(
-                              padding: EdgeInsets.only(bottom: 70.0),
-                              child: RaisedButton(
-                                color: isFollowed ? Colors.lightBlue : Colors.white,
-                                onPressed: (){
-                                  setState(() => isFollowed = !isFollowed);
-                                },
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0)
-                                ),
-                                child: Text(isFollowed ? 'Following' : 'Follow',
-                                  style: TextStyle(
-                                    color: isFollowed ? Colors.white : Colors.lightBlue,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold
+                            Opacity(
+                              opacity: widget.isViewedProfile ? 1.0 : 0.0,
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 70.0),
+                                child: RaisedButton(
+                                  color: isFollowed ? Colors.lightBlue : Colors.white,
+                                  onPressed: (){
+                                    setState(() => isFollowed = !isFollowed);
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0)
+                                  ),
+                                  child: Text(isFollowed ? 'Following' : 'Follow',
+                                    style: TextStyle(
+                                      color: isFollowed ? Colors.white : Colors.lightBlue,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          )
-                        ],
-                      )
-                    ],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
+                bottom: TabBar(
+                  labelColor: Colors.white,
+                  controller: controller,
+                  indicatorColor: Color(0xff73aef5),
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: <Widget>[
+                    Tab(icon: Icon(Icons.description, color: Colors.white),
+                      text: 'Bio',),
+                    Tab(icon: Icon(Icons.grid_on, color: Colors.white),
+                        text: 'Posts')
+                  ],
+                ),
               ),
-              bottom: TabBar(
-                labelColor: Colors.white,
-                controller: controller,
-                indicatorColor: Color(0xff73aef5),
-                indicatorSize: TabBarIndicatorSize.label,
-                tabs: <Widget>[
-                  Tab(icon: Icon(Icons.description, color: Colors.white),
-                    text: 'Bio',),
-                  Tab(icon: Icon(Icons.grid_on, color: Colors.white),
-                      text: 'Posts')
-                ],
-              ),
-            ),
-          ];
-        },
-        body: TabBarView(
-          controller: controller,
-          children: <Widget>[
-            bioUI(),
-            postsUI()
-          ],
+            ];
+          },
+          body: TabBarView(
+            controller: controller,
+            children: <Widget>[
+              bioUI(),
+              postsUI()
+            ],
+          ),
         ),
       ),
     );

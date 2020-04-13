@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../utils/prefs.dart';
+import '../utils/valley_quad_curve.dart';
 
 class UserAvatar extends StatelessWidget {
   final String name, pUrl;
@@ -26,6 +27,26 @@ class UserAvatar extends StatelessWidget {
       ),
 
       body: Hero(
+          flightShuttleBuilder: (BuildContext flightContext,
+              Animation<double> animation,
+              HeroFlightDirection flightDirection,
+              BuildContext fromHeroContext,
+              BuildContext toHeroContext){
+            final Hero toHero = toHeroContext.widget;
+
+            return FadeTransition(
+              opacity: animation.drive(
+                Tween<double>(begin: 0.0, end: 1.0).chain(
+                    CurveTween(
+                        curve: Interval(0.0, 1.0,
+                            curve: ValleyQuadraticCurve()
+                        )
+                    )
+                ),
+              ),
+              child: toHero.child,
+            );
+          },
         tag: tag,
         child: Center(child: Image.asset(pUrl))
       ),
