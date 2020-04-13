@@ -21,7 +21,7 @@ class _AddPostState extends State<AddPost> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: Colors.white
+        statusBarColor: Color(0xff73aef5)
       ),
       child: Scaffold(
         appBar: AppBar(

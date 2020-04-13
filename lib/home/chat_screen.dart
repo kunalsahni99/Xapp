@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   bool isNull = true, isLongPressed = false;
-  ScrollController controller = new ScrollController();
+  ScrollController controller;
   TextEditingController textEditingController = TextEditingController();
 
   var chats = {
@@ -144,7 +145,14 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    controller = new ScrollController();
     scrollDown();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
   }
 
   @override
@@ -160,199 +168,208 @@ class _ChatScreenState extends State<ChatScreen> {
         else{
           countState.setCount(0);
           countState.setList();
+          countState.setChat(null);
           return Future.value(true);
         }
+        countState.setChat(null);
         return Future.value(false);
       },
-      child: Scaffold(
-        appBar: AppBar(
-          titleSpacing: 0.0,
-          backgroundColor: Color(0xff73aef5),
-          leading: IconButton(
-            icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Colors.white),
-            onPressed: (){
-              if (countState.chatCount > 0){
-                countState.setChatCount();
-              }
-              else{
-                countState.setCount(0);
-                countState.setList();
-                Navigator.pop(context);
-              }
-            },
-          ),
-          title: countState.chatCount > 0 ?
-              Container() :
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+            statusBarColor: Color(0xff73aef5)
+        ),
+        child: Scaffold(
+          appBar: AppBar(
+            titleSpacing: 0.0,
+            backgroundColor: Color(0xff73aef5),
+            leading: IconButton(
+              icon: Icon(Utils().retIOS() ? Icons.arrow_back_ios : Icons.arrow_back, color: Colors.white),
+              onPressed: (){
+                if (countState.chatCount > 0){
+                  countState.setChatCount();
+                }
+                else{
+                  countState.setCount(0);
+                  countState.setList();
+                  countState.setChat(null);
+                  Navigator.pop(context);
+                }
+                countState.setChat(null);
+              },
+            ),
+            title: countState.chatCount > 0 ?
+                Container() :
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(right: 10.0),
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage(widget.pUrl),
+                      ),
+                    ),
+
+                    Text(widget.uName,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ],
+                ),
+            actions: <Widget>[
+              countState.chatCount > 0 ?
               Row(
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(right: 10.0),
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage(widget.pUrl),
-                    ),
-                  ),
-
-                  Text(widget.uName,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold
-                    ),
-                  ),
-                ],
-              ),
-          actions: <Widget>[
-            countState.chatCount > 0 ?
-            Row(
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.reply,
-                    color: countState.chatCount > 1 ? Color(0xff73aef5) : Colors.white,
-                  ),
-                  onPressed: countState.chatCount > 1 ? null : (){},
-                ),
-                IconButton(
-                  icon: Icon(FontAwesomeIcons.solidTrashAlt,
-                    color: Colors.white,
-                    size: 22,
-                  ),
-                  onPressed: countState.chatCount > 0 ? (){} : null,
-                ),
-                IconButton(
-                  icon: Icon(Icons.share,
-                    color: Colors.white,
-                  ),
-                  onPressed: countState.chatCount > 0 ? (){} : null,
-                ),
-                Transform(
-                  alignment: Alignment.center,
-                  transform: Matrix4.rotationY(math.pi),
-                  child: IconButton(
+                  IconButton(
                     icon: Icon(Icons.reply,
+                      color: countState.chatCount > 1 ? Color(0xff73aef5) : Colors.white,
+                    ),
+                    onPressed: countState.chatCount > 1 ? null : (){},
+                  ),
+                  IconButton(
+                    icon: Icon(FontAwesomeIcons.solidTrashAlt,
+                      color: Colors.white,
+                      size: 22,
+                    ),
+                    onPressed: countState.chatCount > 0 ? (){} : null,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.share,
                       color: Colors.white,
                     ),
                     onPressed: countState.chatCount > 0 ? (){} : null,
                   ),
-                ),
-              ],
-            ) :
-            Container()
-          ],
-        ),
-
-        body: Stack(
-          children: <Widget>[
-            ListView.builder(
-              itemCount: chats.length,
-              controller: controller,
-              padding: EdgeInsets.only(bottom: 70.0, top: 10.0),
-              itemBuilder: (context, index){
-                return SingleChatBubble(
-                  isPicture: chats['$index']['picture'],
-                  sender: chats['$index']['sender'],
-                  text: chats['$index']['chat'],
-                  id: '$index',
-                  fNode: focusNode,
-                  scrollController: controller,
-                  replyingChat: chats['$index']['replyingChat'] != null ? chats[chats['$index']['replyingChat']]['chat'] : null,
-                  replyOwner: chats['$index']['replyOwner'],
-                  isReplyPicture: chats['$index']['replyingChat'] != null ? chats[chats['$index']['replyingChat']]['picture'] : false,
-                  owner: widget.isGroup ? chats['$index']['owner'] : null,
-                );
-              },
-            ),
-
-            Positioned.directional(
-              textDirection: TextDirection.ltr,
-              bottom: 0.0,
-              height: 60.0,
-              width: MediaQuery.of(context).size.width,
-              child: Container(
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                height: 40.0,
-                padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                child: TextField(
-                  controller: textEditingController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(math.pi),
+                    child: IconButton(
+                      icon: Icon(Icons.reply,
+                        color: Colors.white,
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: const BorderSide(color: Colors.white, width: 0.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: const BorderSide(color: Colors.white, width: 0.0),
-                      ),
-                      hintText: 'Type your message here',
-                      filled: true,
-                      contentPadding: EdgeInsets.only(top: 2.0, left: 10.0),
-                      fillColor: Colors.black.withOpacity(0.1),
-                      suffixIcon: isNull ?
-                      IconButton(
-                        icon: Icon(Icons.photo_camera, color: Colors.lightBlue, size: 30.0),
-                        onPressed: (){},
-                      ) :
-                      IconButton(
-                        icon: Icon(Icons.send, color: Colors.lightBlue, size: 30.0),
-                        onPressed: (){
-                          if (textEditingController.text.length > 0 && textEditingController.text != ' '){
-                            if (countState.selectedChat != null){
-                              setState(() {
-                                chats.addAll({
-                                  '${chats.length}': {
-                                    'chat': textEditingController.text,
-                                    'sender': false,
-                                    'picture': false,
-                                    'replyingChat': countState.selectedChat,
-                                    'replyOwner': chats['${countState.selectedChat}']['sender'] ?
-                                        widget.isGroup ? chats['${countState.selectedChat}']['owner'] : widget.uName
-                                        : 'You'
-                                  }
-                                });
-                                countState.setChat(null);
-
-                                textEditingController.clear();
-                                isNull = true;
-                              });
-                            }
-                            else{
-                              setState((){
-                                chats.addAll({
-                                  '${chats.length}': {
-                                    'chat': textEditingController.text,
-                                    'sender': false,
-                                    'picture': false
-                                  }
-                                });
-                                textEditingController.clear();
-                                isNull = true;
-                              });
-                            }
-                            scrollDown();
-                          }
-                        },
-                      ),
+                      onPressed: countState.chatCount > 0 ? (){} : null,
+                    ),
                   ),
-                  onTap: (){
-                    //todo: call this function when sending a message
-                    Timer(
-                      Duration(milliseconds: 500),
-                      (){
-                        controller.jumpTo(controller.position.maxScrollExtent);
-                      }
-                    );
-                  },
-                  focusNode: focusNode,
-                  onChanged: (text){
-                    text.length == 0 ? setState(() => isNull = true) : setState(() => isNull = false);
-                  },
-                ),
+                ],
+              ) :
+              Container()
+            ],
+          ),
+
+          body: Stack(
+            children: <Widget>[
+              ListView.builder(
+                itemCount: chats.length,
+                controller: controller,
+                padding: EdgeInsets.only(bottom: 70.0, top: 10.0),
+                itemBuilder: (context, index){
+                  return SingleChatBubble(
+                    isPicture: chats['$index']['picture'],
+                    sender: chats['$index']['sender'],
+                    text: chats['$index']['chat'],
+                    id: '$index',
+                    fNode: focusNode,
+                    scrollController: controller,
+                    replyingChat: chats['$index']['replyingChat'] != null ? chats[chats['$index']['replyingChat']]['chat'] : null,
+                    replyOwner: chats['$index']['replyOwner'],
+                    isReplyPicture: chats['$index']['replyingChat'] != null ? chats[chats['$index']['replyingChat']]['picture'] : false,
+                    owner: widget.isGroup ? chats['$index']['owner'] : null,
+                  );
+                },
               ),
-            )
-          ],
+
+              Positioned.directional(
+                textDirection: TextDirection.ltr,
+                bottom: 0.0,
+                height: 60.0,
+                width: MediaQuery.of(context).size.width,
+                child: Container(
+                  color: Colors.white,
+                  width: MediaQuery.of(context).size.width,
+                  height: 40.0,
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+                  child: TextField(
+                    controller: textEditingController,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(color: Colors.white, width: 0.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(color: Colors.white, width: 0.0),
+                        ),
+                        hintText: 'Type your message here',
+                        filled: true,
+                        contentPadding: EdgeInsets.only(top: 2.0, left: 10.0),
+                        fillColor: Colors.black.withOpacity(0.1),
+                        suffixIcon: isNull ?
+                        IconButton(
+                          icon: Icon(Icons.photo_camera, color: Colors.lightBlue, size: 30.0),
+                          onPressed: (){},
+                        ) :
+                        IconButton(
+                          icon: Icon(Icons.send, color: Colors.lightBlue, size: 30.0),
+                          onPressed: (){
+                            if (textEditingController.text.length > 0 && textEditingController.text != ' '){
+                              if (countState.selectedChat != null){
+                                setState(() {
+                                  chats.addAll({
+                                    '${chats.length}': {
+                                      'chat': textEditingController.text,
+                                      'sender': false,
+                                      'picture': false,
+                                      'replyingChat': countState.selectedChat,
+                                      'replyOwner': chats['${countState.selectedChat}']['sender'] ?
+                                          widget.isGroup ? chats['${countState.selectedChat}']['owner'] : widget.uName
+                                          : 'You'
+                                    }
+                                  });
+                                  countState.setChat(null);
+
+                                  textEditingController.clear();
+                                  isNull = true;
+                                });
+                              }
+                              else{
+                                setState((){
+                                  chats.addAll({
+                                    '${chats.length}': {
+                                      'chat': textEditingController.text,
+                                      'sender': false,
+                                      'picture': false
+                                    }
+                                  });
+                                  textEditingController.clear();
+                                  isNull = true;
+                                });
+                              }
+                              scrollDown();
+                            }
+                          },
+                        ),
+                    ),
+                    onTap: (){
+                      //todo: call this function when sending a message
+                      Timer(
+                        Duration(milliseconds: 500),
+                        (){
+                          controller.jumpTo(controller.position.maxScrollExtent);
+                        }
+                      );
+                    },
+                    focusNode: focusNode,
+                    onChanged: (text){
+                      text.length == 0 ? setState(() => isNull = true) : setState(() => isNull = false);
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -35,7 +35,15 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget{
               height: 50,
               minWidth: 50,
               elevation: 0.0,
-              onPressed: () => Navigator.push(context,SlideRightRoute(page: Profile(isViewedProfile: false))),
+              onPressed: () => Navigator.push(context,SlideRightRoute(page: Profile(
+                  pUrl: 'images/pic1.jpg',
+                  uName: 'SarcasticKid',
+                  name: 'Vipul Dubey',
+                  bio: 'A big MF!!!',
+                  followers: '500',
+                  following: '250',
+                  isViewedProfile: false
+              ))),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(bottomRight: Radius.circular(30))
               ),

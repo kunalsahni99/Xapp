@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,7 +23,7 @@ class _FollowListState extends State<FollowList> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-          statusBarColor: Colors.white
+          statusBarColor: Color(0xff73aef5)
       ),
       child: WillPopScope(
         onWillPop: (){
@@ -64,6 +63,7 @@ class _FollowListState extends State<FollowList> {
                     accounts: countState.selectedAcc,
                   ) : ChatScreen(uName: countState.selectedAcc[0]['uName'],
                     pUrl: countState.selectedAcc[0]['pUrl'],
+                    isGroup: false,
                   )));
                 } : null,
               )
