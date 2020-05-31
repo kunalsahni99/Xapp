@@ -139,8 +139,8 @@ class _PreferencesState extends State<Preferences> {
                       }
                       else{
                         Navigator.pushReplacement(context, EnterExitRoute(
-                            enterPage: MainPage(),
-                            exitPage: Preferences()
+                          enterPage: MainPage(),
+                          exitPage: Preferences()
                         ));
                       }
                     }

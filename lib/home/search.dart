@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../transitions/slide_left_route.dart';
 import 'profile.dart';
@@ -13,68 +14,64 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  List<DocumentSnapshot> items = List<DocumentSnapshot>();
-  DateTime eDate;
 
-  //todo: uncomment this
   Future<List<SingleProfile>> search(String value) async{
-//    await Future.delayed(Duration(seconds: 2));
-//    var queryResultSet = [];
-//    var tempSearchStore = [];
-//
-//    if (value.length == 0){
-//      setState(() {
-//        queryResultSet = [];
-//        tempSearchStore = [];
-//      });
-//    }
-//
-//    var capitalizedValue = value.substring(0, 1).toUpperCase() + value.substring(1);
-//
-//    if (queryResultSet.length == 0 && value.length > 0){
-//      await searchByKey(value).then((QuerySnapshot docs){
-//        for (int i = 0; i < docs.documents.length; i++){
-//          setState(() {
-//            queryResultSet.add(docs.documents[i].data);
-//          });
-//        }
-//      });
-//
-//      tempSearchStore = [];
-//      queryResultSet.forEach((element){
-//
-//      });
-//    }
-//
-//    if (tempSearchStore.length == 0) return [];
-//
-//    return List.generate(tempSearchStore.length, (int index){
-//      return Event(
-//          tempSearchStore[index]['Ename'],
-//          tempSearchStore[index]['Url1'],
-//          tempSearchStore[index]['Url2'],
-//          tempSearchStore[index]['Url3'],
-//          tempSearchStore[index]['Url4'],
-//          tempSearchStore[index]['Edesc'],
-//          tempSearchStore[index]['orgn'],
-//          tempSearchStore[index]['venue'],
-//          tempSearchStore[index]['Edate'],
-//          tempSearchStore[index]['eventID'],
-//          tempSearchStore[index]['igLink'],
-//          tempSearchStore[index]['fbLink']
-//      );
-//    });
+    await Future.delayed(Duration(seconds: 2));
+    var queryResultSet = [];
+    var tempSearchStore = [];
+
+    if (value.length == 0){
+      setState(() {
+        queryResultSet = [];
+        tempSearchStore = [];
+      });
+    }
+
+    var capitalizedValue = value.substring(0, 1).toUpperCase() + value.substring(1);
+
+    if (queryResultSet.length == 0 && value.length > 0){
+      await searchByKey(value).then((QuerySnapshot docs){
+        for (int i = 0; i < docs.documents.length; i++){
+          setState(() {
+            queryResultSet.add(docs.documents[i].data);
+          });
+        }
+      });
+
+      tempSearchStore = [];
+      queryResultSet.forEach((element){
+        if (element['name'].startsWith(capitalizedValue) || element['username'].startsWith(capitalizedValue)){
+          setState(() {
+            tempSearchStore.add(element);
+          });
+        }
+      });
+    }
+
+    if (tempSearchStore.length == 0) return [];
+
+    return List.generate(tempSearchStore.length, (int index){
+      return SingleProfile(
+        tempSearchStore[index]['profilePicture'],
+        tempSearchStore[index]['username'],
+        tempSearchStore[index]['id'],
+        tempSearchStore[index]['name'],
+        tempSearchStore[index]['bio'],
+        tempSearchStore[index]['followers'],
+        tempSearchStore[index]['following'],
+      );
+    });
   }
 
   searchByKey(String field){
-    return Firestore.instance.collection('events').where('searchKey', isEqualTo: field.substring(0, 1).toUpperCase()).getDocuments();
+    return Firestore.instance.collection('users').where('searchKey', arrayContains: field.substring(0, 1).toUpperCase()).getDocuments();
   }
 
   Widget singleProfile(SingleProfile profile){
     return ListTile(
       leading: CircleAvatar(
         radius: 20.0,
-        backgroundImage: AssetImage(profile.pUrl),
+        backgroundImage: CachedNetworkImageProvider(profile.pUrl),
       ),
       title: Text(profile.uName,
         style: TextStyle(
@@ -91,10 +88,6 @@ class _SearchState extends State<Search> {
         Navigator.push(context, SlideLeftRoute(page: Profile(
           pUrl: profile.pUrl,
           uName: profile.uName,
-          name: profile.name,
-          bio: profile.bio,
-          followers: profile.followers,
-          following: profile.following,
           isViewedProfile: true,
         )));
       },
@@ -109,56 +102,8 @@ class _SearchState extends State<Search> {
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           child: SearchBar(
             onSearch: search,
-            //todo: list of suggestions of SingleProfiles 
-            suggestions: [
-              SingleProfile(
-                pUrl: 'images/pic.jpg',
-                uName: 'IamKSahni',
-                name: 'Kunal Sahni',
-                followers: '200',
-                following: '4',
-                index: '0',
-                bio: "Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content."
-              ),
-              SingleProfile(
-                  pUrl: 'images/pic1.jpg',
-                  uName: 'SarcasticKid',
-                  name: 'Vipul Dubey',
-                  followers: '200',
-                  following: '4',
-                  index: '1',
-                  bio: "Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content."
-              ),
-              SingleProfile(
-                  pUrl: 'images/pic2.jpg',
-                  uName: '@zero',
-                  name: 'Suraj Jha',
-                  followers: '200',
-                  following: '4',
-                  index: '2',
-                  bio: "Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content."
-              ),
-              SingleProfile(
-                  pUrl: 'images/pic.jpg',
-                  uName: 'IamKSahni',
-                  name: 'Kunal Sahni',
-                  followers: '200',
-                  following: '4',
-                  index: '3',
-                  bio: "Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content."
-              ),
-              SingleProfile(
-                  pUrl: 'images/pic2.jpg',
-                  uName: '@zero',
-                  name: 'Suraj Jha',
-                  followers: '200',
-                  following: '4',
-                  index: '4',
-                  bio: "Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content."
-              ),
-            ],
-            buildSuggestion: (SingleProfile profile, int index){
-              return singleProfile(profile);
+            onError: (error){
+              return Text(error.toString());
             },
             onItemFound: (SingleProfile profile, int index){
               return singleProfile(profile);
@@ -244,9 +189,10 @@ class _SearchState extends State<Search> {
 }
 
 class SingleProfile{
-  String uName, pUrl, name, followers, following,  bio, index;
+  String uName, pUrl, name,  bio, index;
+  int  followers, following;
 
-  SingleProfile({
+  SingleProfile(
     this.pUrl,
     this.uName,
     this.index,
@@ -254,5 +200,5 @@ class SingleProfile{
     this.bio,
     this.followers,
     this.following
-  });
+  );
 }

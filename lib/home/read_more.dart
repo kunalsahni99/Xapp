@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../transitions/slide_top_route.dart';
 import 'comments.dart';
@@ -51,7 +52,7 @@ class _ReadMoreState extends State<ReadMore> {
             child: Row(
               children: <Widget>[
                 CircleAvatar(
-                  backgroundImage: AssetImage(widget.pUrl),
+                  backgroundImage: CachedNetworkImageProvider(widget.pUrl),
                 ),
 
                 Padding(
@@ -68,10 +69,10 @@ class _ReadMoreState extends State<ReadMore> {
             ),
           ),
 
-          Image.asset(widget.picUrl),
+          CachedNetworkImage(imageUrl: widget.picUrl),
 
           Padding(
-            padding: EdgeInsets.only(left: 20.0, top: 5.0),
+            padding: EdgeInsets.only(left: 10.0, top: 5.0),
             child: Text(widget.title,
               style: TextStyle(
                   color: Colors.black54,

@@ -36,12 +36,8 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget{
               minWidth: 50,
               elevation: 0.0,
               onPressed: () => Navigator.push(context,SlideRightRoute(page: Profile(
-                  pUrl: 'images/pic1.jpg',
+                  pUrl: 'https://firebasestorage.googleapis.com/v0/b/xapp-5775a.appspot.com/o/users%2FWzajDLw4U5XYtoeQP01F5SW9tv32%2Fposts%2Fpost_null?alt=media&token=b222e090-a281-43f2-9068-8d5fe42502bc',
                   uName: 'SarcasticKid',
-                  name: 'Vipul Dubey',
-                  bio: 'A big MF!!!',
-                  followers: '500',
-                  following: '250',
                   isViewedProfile: false
               ))),
               shape: RoundedRectangleBorder(

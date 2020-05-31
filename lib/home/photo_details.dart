@@ -2,15 +2,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
+import '../transitions/slide_top_route.dart';
 import '../utils/valley_quad_curve.dart';
+import 'comments.dart';
 import '../utils/prefs.dart';
 
 class PhotoDetails extends StatefulWidget {
-  final String pUrl, title;
-  final int id;
+  final String pUrl, title, id;
+  final dynamic comments;
+  final int agree, disagree;
 
-  PhotoDetails({this.pUrl, this.title, this.id});
+  PhotoDetails({this.pUrl, this.title, this.id, this.comments, this.agree, this.disagree});
 
   @override
   _PhotoDetailsState createState() => _PhotoDetailsState();
@@ -65,7 +69,7 @@ class _PhotoDetailsState extends State<PhotoDetails> {
                   onPressed: !visible ? null : () => showModalBottomSheet(
                       context: context,
                       builder: (context) => Container(
-                        height: 150.0,
+                       height: 150.0,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -131,7 +135,7 @@ class _PhotoDetailsState extends State<PhotoDetails> {
               ),
               minScale: 0.0,
               maxScale: 5.0,
-              imageProvider: AssetImage(widget.pUrl),
+              imageProvider: CachedNetworkImageProvider(widget.pUrl),
             ),
           ),
 
@@ -194,7 +198,13 @@ class _PhotoDetailsState extends State<PhotoDetails> {
                       ),
 
                       InkWell(
-                        onTap: !visible ? null : (){},
+                        onTap: !visible ? null : () => Navigator.push(context,
+                            SlideTopRoute(page: Comments(
+                              comments: widget.comments,
+                              agree: widget.agree,
+                              disAgree: widget.disagree,
+                              postID: widget.id,
+                        ))),
                         child: Row(
                           children: <Widget>[
                             Icon(FontAwesomeIcons.commentAlt, color: Colors.white),
@@ -220,3 +230,4 @@ class _PhotoDetailsState extends State<PhotoDetails> {
     );
   }
 }
+

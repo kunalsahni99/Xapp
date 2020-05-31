@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:rect_getter/rect_getter.dart';
+import 'package:xapp/home/mainpage.dart';
 
 import 'login/login.dart';
 import 'utils/prefs.dart';
@@ -25,14 +26,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<Prefs>(create: (_) => Prefs()),
-        ChangeNotifierProvider<Count>(create: (_) => Count())
+        ChangeNotifierProvider<Count>(create: (_) => Count()),
       ],
       child: MaterialApp(
         title: 'Xapp',
         theme: ThemeData(
           primaryColor: Color(0xff73aef5),
           accentColor: Color(0xff73aef5),
-          fontFamily: 'Open Sans',
+          fontFamily: 'McLaren',
         ),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
@@ -95,13 +96,14 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(
       Duration(seconds: 4),
       (){
-        if (firsTime){
-          _onTimeOut(OnBoarding());
-        }
-        else{
-          //todo: check if user is logged in or not
-          _onTimeOut(Login());
-        }
+//        if (firsTime){
+//          _onTimeOut(OnBoarding());
+//        }
+//        else{
+//          //todo: check if user is logged in or not
+//          _onTimeOut(Login());
+//        }
+        _onTimeOut(MainPage());
       }
     );
   }

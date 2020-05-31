@@ -6,20 +6,21 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fade/fade.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:progressive_image/progressive_image.dart';
 
-import 'photo_details.dart';
 import '../transitions/ripple_right_up.dart';
-import '../utils/valley_quad_curve.dart';
+import 'read_more.dart';
 import 'search.dart';
 import 'profile.dart';
-import 'read_more.dart';
 import 'comments.dart';
 import '../transitions/slide_top_route.dart';
 import 'add_post.dart';
 import '../utils/app_bar.dart';
-
-bool disAg = false,
-    Ag = false;
+import '../utils/valley_quad_curve.dart';
+import 'photo_details.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -55,129 +56,174 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-          statusBarColor: Color(0xff73aef5)
-      ),
+      value: SystemUiOverlayStyle(statusBarColor: Color(0xff73aef5)),
       child: WillPopScope(
           onWillPop: _onWillPopScope,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Scaffold(
-                appBar: TopBar(title: 'WhyyU'),
-                body: PageView.builder(
-                  itemCount: 10,
-                  controller: controller,
-                  scrollDirection: Axis.vertical,
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, index) =>
-                      GestureDetector(
-                        onPanUpdate: (details) {
-                          if (details.delta.dx > 0) {
-                            //todo: right swipe
-                            setState(() => Ag = true);
-                            Timer(
-                                Duration(milliseconds: 500),
-                                    () => setState(() => Ag = false)
-                            );
-                          }
-                          else if (details.delta.dx < 0) {
-                            //todo: left swipe
-                            setState(() => disAg = true);
-                            Timer(
-                                Duration(milliseconds: 500),
-                                    () => setState(() => disAg = false)
-                            );
-                          }
-                        },
-                        child: SinglePost(id: index),
-                      ),
-                ),
-
-                floatingActionButton: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.lightBlue,
-                      borderRadius: BorderRadius.circular(30.0),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black54,
-                            offset: Offset(0, 2),
-                            blurRadius: 4.0
-                        )
-                      ]
+          child: Scaffold(
+            appBar: TopBar(title: 'Whyyu'),
+            body: StreamBuilder<QuerySnapshot>(
+                //todo: add where() here to get posts according to user's preferences
+                stream: Firestore.instance.collection("posts").snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError)
+                    return new Text('Error: ${snapshot.error}');
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(bottom: 100.0),
+                            child: SpinKitCircle(
+                              color: Colors.black54,
+                              size: 30.0,
+                            )),
+                      );
+                    default:
+                      return PageView(
+                        controller: controller,
+                        scrollDirection: Axis.vertical,
+                        physics: BouncingScrollPhysics(),
+                        children: snapshot.data.documents.map((document) {
+                          return SinglePost(
+                            title: document['title'],
+                            desc: document['desc'],
+                            uName: document['uName'],
+                            postID: document['postID'],
+                            pUrl: document['pUrl'],
+                            picUrl: document['picUrl'],
+                            category: document['category'],
+                            agree: document['agree'],
+                            disAgree: document['disagree'],
+                            percentAgree: document['percent_agree'],
+                            comments: document['comments'],
+                          );
+                        }).toList(),
+                      );
+                  }
+                }),
+            floatingActionButton: Container(
+              decoration: BoxDecoration(
+                  color: Colors.lightBlue,
+                  borderRadius: BorderRadius.circular(30.0),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black54,
+                        offset: Offset(0, 2),
+                        blurRadius: 4.0)
+                  ]),
+              width: 100.0,
+              height: 50.0,
+              padding: EdgeInsets.only(left: 10.0, right: 10.0),
+              margin: EdgeInsets.only(bottom: 40.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  InkWell(
+                      onTap: () => Navigator.push(context,
+                          RippleRightUp(page: Search(), isRightUp: true)),
+                      child:
+                          Icon(FontAwesomeIcons.search, color: Colors.white)),
+                  Container(
+                    width: 1.0,
+                    height: 30.0,
+                    color: Colors.white,
                   ),
-                  width: 100.0,
-                  height: 50.0,
-                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                  margin: EdgeInsets.only(bottom: 30.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      InkWell(
-                          onTap: () =>
-                              Navigator.push(context, RippleRightUp(
-                                  page: Search(), isRightUp: true)),
-                          child: Icon(
-                              FontAwesomeIcons.search, color: Colors.white)
-                      ),
-
-                      Container(
-                        width: 1.0,
-                        height: 30.0,
-                        color: Colors.white,
-                      ),
-
-                      InkWell(
-                          onTap: () =>
-                              Navigator.push(context, RippleRightUp(
-                                  page: AddPost(), isRightUp: true)),
-                          child: Icon(
-                              FontAwesomeIcons.plus, color: Colors.white)
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          )
-      ),
+                  InkWell(
+                      onTap: () => Navigator.push(context,
+                          RippleRightUp(page: AddPost(), isRightUp: true)),
+                      child: Icon(FontAwesomeIcons.plus, color: Colors.white)),
+                ],
+              ),
+            ),
+          )),
     );
   }
 }
 
 class SinglePost extends StatefulWidget {
-  final int id;
+  final String postID, uName, pUrl, picUrl, title, desc, category;
+  final int agree, disAgree, percentAgree;
+  final dynamic comments;
 
-  SinglePost({this.id});
+  SinglePost(
+      {this.title,
+      this.desc,
+      this.uName,
+      this.pUrl, //todo: profile_pic of user
+      this.category,
+      this.picUrl, //todo: Url of picture of post
+      this.agree,
+      this.disAgree,
+      this.percentAgree,
+      this.postID,
+      this.comments
+  });
 
   @override
   _SinglePostState createState() => _SinglePostState();
 }
 
-class _SinglePostState extends State<SinglePost>
-    with SingleTickerProviderStateMixin {
+class _SinglePostState extends State<SinglePost> with SingleTickerProviderStateMixin {
+  TextPainter tp;
+  TextSpan span;
+  bool disAg = false, Ag = false;
+
+
 
   goToPost(){
     Navigator.push(context, SlideTopRoute(
         page: ReadMore(
-          //todo: give all these values dynamically
-          title: "Some shitty thought you can\'t imagine",
-          desc: "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used before final copy is available, but it may also be used to temporarily replace copy in a process called greeking, which allows designers to consider form without the meaning of the text influencing the design.Lorem ipsum is typically a corrupted version of De finibus bonorum et malorum, a first-century BCE text by the Roman statesman and philosopher Cicero, with words altered, added, and removed to make it nonsensical, improper Latin.",
-          pUrl: 'images/pic.jpg',
-          picUrl: 'images/something.jpg',
-          ag: 5000,
-          disAg: 1000,
-          uName: 'IamKSahni',
+          title: widget.title,
+          desc: widget.desc,
+          pUrl: widget.pUrl,
+          picUrl: widget.picUrl,
+          ag: widget.agree,
+          disAg: widget.disAgree,
+          uName: widget.uName,
         )));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    span = TextSpan(
+      text: widget.desc,
+      style: TextStyle(
+        color: Colors.black54,
+        fontWeight: FontWeight.bold,
+        fontSize: 20.0
+      ),
+    );
+
+    tp = TextPainter(
+      text: span,
+      maxLines: 6,
+      textDirection: TextDirection.ltr
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        tp.layout(maxWidth: constraints.maxWidth);
         return Stack(
           children: <Widget>[
-            Container(
-              height: constraints.maxHeight,
+            GestureDetector(
+              onPanUpdate: (details) {
+                if (details.delta.dx > 0) {
+                  //todo: right swipe
+                  setState(() => Ag = true);
+                  Timer(Duration(milliseconds: 500),
+                          () => setState(() => Ag = false));
+                } else if (details.delta.dx < 0) {
+                  //todo: left swipe
+                  setState(() => disAg = true);
+                  Timer(Duration(milliseconds: 500),
+                          () => setState(() => disAg = false));
+                }
+              },
               child: Column(
                 children: <Widget>[
                   Row(
@@ -188,42 +234,40 @@ class _SinglePostState extends State<SinglePost>
                           Container(
                             padding: EdgeInsets.all(10.0),
                             child: CircleAvatar(
-                              backgroundImage: AssetImage('images/pic.jpg'),
+                              backgroundImage:
+                                  CachedNetworkImageProvider(widget.pUrl),
                             ),
                           ),
-
                           GestureDetector(
-                            onTap: () =>
-                                Navigator.push(context, SlideTopRoute(page: Profile(
-                                    pUrl: 'images/pic.jpg',
-                                    uName: 'IamKSahni',
-                                    name: 'Kunal Sahni',
-                                    bio: 'Fuckin Asshole',
-                                    followers: '500',
-                                    following: '250',
-                                    isViewedProfile: true
-                                ))),
-                            child: Text('IamKSahni',
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  SlideTopRoute(
+                                      page: Profile(
+                                          uName: widget.uName,
+                                          pUrl: widget.pUrl,
+                                          isViewedProfile: true)));
+                            },
+                            child: Text(
+                              widget.uName,
                               style: TextStyle(
                                   color: Colors.black54,
                                   fontSize: 16.0,
-                                  fontWeight: FontWeight.bold
-                              ),
+                                  fontWeight: FontWeight.bold),
                             ),
                           )
                         ],
                       ),
-
                       Padding(
                         padding: EdgeInsets.only(right: 10.0),
                         child: Row(
                           children: <Widget>[
-                            Icon(FontAwesomeIcons.thumbsUp, color: Colors.lightBlue,
-                                size: 20.0),
-                            //todo: find agree %age nd show it here
+                            Icon(FontAwesomeIcons.thumbsUp,
+                                color: Colors.lightBlue, size: 20.0),
                             Padding(
                               padding: EdgeInsets.only(left: 5.0),
-                              child: Text('69%',
+                              child: Text(
+                                widget.percentAgree.toString() + '%',
                                 style: TextStyle(
                                   color: Colors.lightBlue,
                                 ),
@@ -238,13 +282,16 @@ class _SinglePostState extends State<SinglePost>
                   GestureDetector(
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(
-                          builder: (_) => PhotoDetails(pUrl: 'images/something.jpg',
-                              title: 'Some shitty thought you can\'t imagine',
-                              id: widget.id)
+                          builder: (_) => PhotoDetails(pUrl: widget.picUrl,
+                            title: widget.title,
+                            id: widget.postID,
+                            agree: widget.agree,
+                            disagree: widget.disAgree,
+                            comments: widget.comments,
+                          )
                       ));
                     },
                     child: Hero(
-                      tag: widget.id,
                       flightShuttleBuilder: (BuildContext flightContext,
                           Animation<double> animation,
                           HeroFlightDirection flightDirection,
@@ -265,24 +312,31 @@ class _SinglePostState extends State<SinglePost>
                           child: toHero.child,
                         );
                       },
-                      child: Image.asset('images/something.jpg',
+                      tag: widget.postID,
+                      child: ProgressiveImage(
+                        placeholder: AssetImage('images/logo.png'),
+                        fadeDuration: Duration(milliseconds: 1000),
+                        thumbnail: NetworkImage(widget.picUrl),
+                        image: NetworkImage(widget.picUrl),
                         width: MediaQuery.of(context).size.width,
-                        fit: BoxFit.fitWidth,
-                        height: constraints.maxHeight > 720 ? 300 : 200,
+                        height: constraints.maxHeight >= 660 ? 280.0 : 200.0,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
 
                   //TODO: heading
                   Padding(
-                    padding: EdgeInsets.only(left: 20.0),
-                    child: Text("Some shitty thought you can\'t imagine",
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      widget.title,
                       maxLines: 2,
+                      textAlign: TextAlign.start,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0
                       ),
                     ),
                   ),
@@ -291,50 +345,52 @@ class _SinglePostState extends State<SinglePost>
                   GestureDetector(
                     onTap: () => goToPost(),
                     child: Container(
-                      padding: EdgeInsets.only(left: 20.0, top: 10.0),
+                      padding: EdgeInsets.only(left: 5.0, top: 10.0),
                       child: Text(
-                        "No one gives a fuck to this post so scroll down, you'll find another. Lorem ipsum is a pseudo-Latin text used in web design, typography, layout, and printing in place of English to emphasise design elements over content. It's also called placeholder (or filler) text. It's a convenient tool for mock-ups. It helps to outline the visual elements of a document or presentation, eg typography, font, or layout. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                        widget.desc,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15.0,
                         ),
-                        maxLines: constraints.maxHeight > 720 ? 9 : 6,
                         overflow: TextOverflow.fade,
+                        maxLines: 6,
                         textAlign: TextAlign.start,
                       ),
                     ),
                   ),
 
+                  tp.didExceedMaxLines ?
                   Container(
-                      alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.only(top: 10.0, left: 20.0),
-                      child: RichText(
-                        text: TextSpan(
-                            style: TextStyle(
-                                color: Colors.lightBlue,
-                                fontSize: 17.0,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Open Sans',
-                                decoration: TextDecoration.underline,
-                                letterSpacing: 1.0,
-                                decorationThickness: 2.0
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: 'Read more',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () => goToPost(),
-                              )
-                            ]
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(top: 10.0, left: 20.0),
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          color: Colors.lightBlue,
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Open Sans',
+                          decoration: TextDecoration.underline,
+                          letterSpacing: 1.0,
+                          decorationThickness: 2.0
                         ),
-                      )
-                  ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'Read more',
+                            recognizer: TapGestureRecognizer()
+                            ..onTap = () => goToPost(),
+                          )
+                        ]
+                      ),
+                    )
+                  ) :
+                  SizedBox(),
 
                   Spacer(),
 
                   //todo: buttons
                   Container(
-                    padding: EdgeInsets.only(left: 5.0, right: 5.0, bottom: 10.0),
+                    padding: EdgeInsets.only(bottom: 10.0, left: 5.0, right: 5.0),
                     width: MediaQuery.of(context).size.width,
                     color: Colors.transparent,
                     child: Row(
@@ -344,29 +400,26 @@ class _SinglePostState extends State<SinglePost>
                           onTap: () {},
                           child: Row(
                             children: <Widget>[
-                              Icon(
-                                  FontAwesomeIcons.thumbsUp, color: Color(0xff73aef5),
-                                  size: 18.0),
+                              Icon(FontAwesomeIcons.thumbsUp,
+                                  color: Color(0xff73aef5), size: 18.0),
                               Padding(
                                 padding: EdgeInsets.only(left: 10.0),
-                                child: Text('Agree',
+                                child: Text(
+                                  'Agree',
                                   style: TextStyle(
                                       color: Color(0xff73aef5),
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 18.0
-                                  ),
+                                      fontSize: 18.0),
                                 ),
                               )
                             ],
                           ),
                         ),
-
                         Container(
                           width: 1.0,
-                          height: 30.0,
+                          height: 50.0,
                           color: Colors.grey,
                         ),
-
                         InkWell(
                           onTap: () {},
                           child: Row(
@@ -375,28 +428,33 @@ class _SinglePostState extends State<SinglePost>
                                   color: Color(0xff73aef5), size: 18.0),
                               Padding(
                                 padding: EdgeInsets.only(left: 10.0),
-                                child: Text('Disagree',
+                                child: Text(
+                                  'Disagree',
                                   style: TextStyle(
                                       color: Color(0xff73aef5),
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 18.0
-                                  ),
+                                      fontSize: 18.0),
                                 ),
                               )
                             ],
                           ),
                         ),
-
                         Container(
                           width: 1.0,
-                          height: 30.0,
+                          height: 50.0,
                           color: Colors.grey,
                         ),
-
                         InkWell(
                           onTap: () {
                             Navigator.push(context,
-                                MaterialPageRoute(builder: (_) => Comments()));
+                              SlideTopRoute(page: Comments(
+                                    comments: widget.comments,
+                                    disAgree: widget.disAgree,
+                                    agree: widget.agree,
+                                    postID: widget.postID,
+                                  )
+                              )
+                            );
                           },
                           child: Row(
                             children: <Widget>[
@@ -404,12 +462,12 @@ class _SinglePostState extends State<SinglePost>
                                   color: Color(0xff73aef5), size: 18.0),
                               Padding(
                                 padding: EdgeInsets.only(left: 10.0),
-                                child: Text('Comment',
+                                child: Text(
+                                  'Comment',
                                   style: TextStyle(
                                       color: Color(0xff73aef5),
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 18.0
-                                  ),
+                                      fontSize: 18.0),
                                 ),
                               )
                             ],
@@ -421,7 +479,6 @@ class _SinglePostState extends State<SinglePost>
                 ],
               ),
             ),
-
             Fade(
               duration: Duration(milliseconds: 400),
               visible: disAg,
@@ -429,7 +486,6 @@ class _SinglePostState extends State<SinglePost>
                 color: Color(0xffEF405B).withOpacity(0.4),
               ),
             ),
-
             Fade(
               duration: Duration(milliseconds: 400),
               visible: Ag,
@@ -439,7 +495,7 @@ class _SinglePostState extends State<SinglePost>
             ),
           ],
         );
-      }
+      },
     );
   }
 }
