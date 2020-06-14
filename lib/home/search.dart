@@ -17,8 +17,7 @@ class _SearchState extends State<Search> {
 
   Future<List<SingleProfile>> search(String value) async{
     await Future.delayed(Duration(seconds: 2));
-    var queryResultSet = [];
-    var tempSearchStore = [];
+    var queryResultSet = [], tempSearchStore = [];
 
     if (value.length == 0){
       setState(() {
@@ -86,7 +85,6 @@ class _SearchState extends State<Search> {
       ),
       onTap: (){
         Navigator.push(context, SlideLeftRoute(page: Profile(
-          pUrl: profile.pUrl,
           uName: profile.uName,
           isViewedProfile: true,
         )));

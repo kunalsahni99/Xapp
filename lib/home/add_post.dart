@@ -77,7 +77,7 @@ class _AddPostState extends State<AddPost> {
           children: <Widget>[
             InkWell(
               onTap: (){
-                Utils().bottomSheet(context);
+
               },
               child: FadeIn(
                 delay: 1.33,

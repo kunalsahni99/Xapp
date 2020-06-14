@@ -60,7 +60,7 @@ class _MainPageState extends State<MainPage> {
       child: WillPopScope(
           onWillPop: _onWillPopScope,
           child: Scaffold(
-            appBar: TopBar(title: 'Whyyu'),
+            appBar: TopBar(title: 'WhyyU'),
             body: StreamBuilder<QuerySnapshot>(
                 //todo: add where() here to get posts according to user's preferences
                 stream: Firestore.instance.collection("posts").snapshots(),
@@ -181,6 +181,8 @@ class _SinglePostState extends State<SinglePost> with SingleTickerProviderStateM
           ag: widget.agree,
           disAg: widget.disAgree,
           uName: widget.uName,
+          comments: widget.comments,
+          id: widget.postID,
         )));
   }
 
@@ -245,7 +247,6 @@ class _SinglePostState extends State<SinglePost> with SingleTickerProviderStateM
                                   SlideTopRoute(
                                       page: Profile(
                                           uName: widget.uName,
-                                          pUrl: widget.pUrl,
                                           isViewedProfile: true)));
                             },
                             child: Text(

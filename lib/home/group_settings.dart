@@ -134,7 +134,7 @@ class _GrpSettingsState extends State<GrpSettings> {
                   children: <Widget>[
                     InkWell(
                       onTap: (){
-                        Utils().bottomSheet(context);
+
                       },
                       child: CircleAvatar(
                         radius: 30.0,

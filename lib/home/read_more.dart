@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../utils/valley_quad_curve.dart';
 import '../transitions/slide_top_route.dart';
 import 'comments.dart';
 
 class ReadMore extends StatefulWidget {
-  final String pUrl, uName, picUrl, title, desc;
+  final String pUrl, uName, picUrl, title, desc, id;
   final int ag, disAg;
+  final dynamic comments;
 
   ReadMore({
     this.uName,
@@ -16,7 +18,9 @@ class ReadMore extends StatefulWidget {
     this.disAg,
     this.title,
     this.ag,
-    this.desc
+    this.desc,
+    this.comments,
+    this.id
   });
 
   @override
@@ -25,6 +29,15 @@ class ReadMore extends StatefulWidget {
 
 class _ReadMoreState extends State<ReadMore> {
   bool isAgTapped = false, isDisAgTapped = false;
+  int comLength = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.comments.keys.forEach((id){
+      comLength += widget.comments[id]['comment'].length;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +82,30 @@ class _ReadMoreState extends State<ReadMore> {
             ),
           ),
 
-          CachedNetworkImage(imageUrl: widget.picUrl),
+          Hero(
+              flightShuttleBuilder: (BuildContext flightContext,
+                  Animation<double> animation,
+                  HeroFlightDirection flightDirection,
+                  BuildContext fromHeroContext,
+                  BuildContext toHeroContext) {
+                final Hero toHero = toHeroContext.widget;
+
+                return FadeTransition(
+                  opacity: animation.drive(
+                    Tween<double>(begin: 0.0, end: 1.0).chain(
+                        CurveTween(
+                            curve: Interval(0.0, 1.0,
+                                curve: ValleyQuadraticCurve()
+                            )
+                        )
+                    ),
+                  ),
+                  child: toHero.child,
+                );
+              },
+              tag: widget.id,
+            child: CachedNetworkImage(imageUrl: widget.picUrl)
+          ),
 
           Padding(
             padding: EdgeInsets.only(left: 10.0, top: 5.0),
@@ -154,7 +190,7 @@ class _ReadMoreState extends State<ReadMore> {
                     //todo: length of comments on this post
                     Padding(
                       padding: EdgeInsets.only(left: 5.0),
-                      child: Text('100',
+                      child: Text(comLength.toString(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18.0
@@ -164,7 +200,12 @@ class _ReadMoreState extends State<ReadMore> {
                   ],
                 ),
                 onPressed: (){
-                  Navigator.push(context, SlideTopRoute(page: Comments()));
+                  Navigator.push(context, SlideTopRoute(page: Comments(
+                    comments: widget.comments,
+                    agree: widget.ag,
+                    disAgree: widget.disAg,
+                    postID: widget.id,
+                  )));
                 },
               )
             ],

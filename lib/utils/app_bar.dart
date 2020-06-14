@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-//import 'package:line_icons/line_icons.dart';
 
 import '../transitions/slide_left_route.dart';
 import '../transitions/slide_right_route.dart';
@@ -36,8 +35,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget{
               minWidth: 50,
               elevation: 0.0,
               onPressed: () => Navigator.push(context,SlideRightRoute(page: Profile(
-                  pUrl: 'https://firebasestorage.googleapis.com/v0/b/xapp-5775a.appspot.com/o/users%2FWzajDLw4U5XYtoeQP01F5SW9tv32%2Fposts%2Fpost_null?alt=media&token=b222e090-a281-43f2-9068-8d5fe42502bc',
-                  uName: 'SarcasticKid',
+                  uName: 'IamKSahni',
                   isViewedProfile: false
               ))),
               shape: RoundedRectangleBorder(

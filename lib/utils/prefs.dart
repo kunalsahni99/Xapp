@@ -6,10 +6,13 @@ import 'package:flutter_video_compress/flutter_video_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_trimmer/video_trimmer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:highlight_text/highlight_text.dart';
+import 'package:xapp/home/profile.dart';
 
+import '../transitions/slide_top_route.dart';
 import '../utils/preview.dart';
 import 'trimmer_view.dart';
-
 
 //todo: for keeping the count of preferences selected
 class Prefs with ChangeNotifier {
@@ -122,6 +125,11 @@ class Utils {
       ];
   final flutterVidCompress = FlutterVideoCompress();
 
+  TextStyle tagStyle = TextStyle(
+    color: Colors.lightBlue,
+    fontFamily: 'McLaren'
+  );
+
   BoxDecoration boxDecoration = BoxDecoration(
       color: Colors.white,
       border: Border(
@@ -134,10 +142,10 @@ class Utils {
     borderSide: BorderSide(color: Colors.grey, width: 0.0),
   ),
 
-      enabledBorder = OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30.0),
-        borderSide: BorderSide(color: Colors.white, width: 0.0),
-      );
+  enabledBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(30.0),
+    borderSide: BorderSide(color: Colors.white, width: 0.0),
+  );
 
   Future<SharedPreferences> getPrefs() async =>
       await SharedPreferences.getInstance();
@@ -152,6 +160,43 @@ class Utils {
         size: 50.0,
       ),
     );
+  }
+
+  Map<String, HighlightedWord> retMap(BuildContext context, List uList){
+    Map<String, HighlightedWord> map = {};
+
+    uList.forEach((uName) {
+      map.addAll({
+        '@$uName': HighlightedWord(
+          textStyle: tagStyle,
+          onTap: (){
+            Navigator.push(context, SlideTopRoute(page: Profile(
+              isViewedProfile: true,
+              uName: uName,
+            )));
+          }
+        )
+      });
+    });
+
+    return map;
+  }
+
+  Future<List> retSuggestions(String pattern) async{
+    var matches = [];
+
+    Firestore.instance.collection('users').where('searchKey', arrayContains: pattern.substring(0, 1).toUpperCase())
+        .getDocuments().then((QuerySnapshot docs){
+          for (int i = 0; i < docs.documents.length; i++){
+            matches.add({
+              'pUrl': docs.documents[i].data['profilePicture'],
+              'uName': docs.documents[i].data['username']
+            });
+          }
+    });
+    await Future.delayed(Duration(seconds: 1));
+
+    return matches;
   }
 
   Future<File> compressVid(File file) async {
